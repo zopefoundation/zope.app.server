@@ -280,6 +280,7 @@ class Options(object):
     destination = None
     version = "[test-version]"
     program = "[test-program]"
+    from_checkout = False
 
 
 def test_suite():

@@ -32,7 +32,7 @@ import zope
 from zope.app.applicationcontrol import zopeversion
 
 
-def main(argv=None):
+def main(argv=None, from_checkout=False):
     """Top-level script function to create a new Zope instance."""
     if argv is None:
         argv = sys.argv
@@ -43,6 +43,7 @@ def main(argv=None):
             return 2
         else:
             return 0
+    options.from_checkout = from_checkout
     app = Application(options)
     try:
         return app.process()
@@ -105,6 +106,19 @@ class Application(object):
 
         # now create the instance!
         self.copy_skeleton()
+        if options.from_checkout:
+            # need to copy ZCML differently since it's not in the skeleton:
+            import __main__
+            swhome = os.path.dirname(
+                os.path.dirname(os.path.realpath(__main__.__file__)))
+            shutil.copy2(os.path.join(swhome, "securitypolicy.zcml"),
+                         os.path.join(options.destination, "etc"))
+            piname = "package-includes"
+            pisrc = os.path.join(swhome, piname)
+            pidst = os.path.join(options.destination, "etc", piname)
+            for fn in os.listdir(pisrc):
+                if fn.endswith(".zcml"):
+                    shutil.copy2(os.path.join(pisrc, fn), pidst)
         return 0
 
     def get_skeltarget(self):
@@ -235,6 +249,7 @@ def parse_args(argv):
     p.add_option("-u", "--user", dest="username", metavar="USER:PASSWORD",
                  help="set the user name and password of the initial user")
     options, args = p.parse_args(argv[1:])
+    options.from_checkout = False
     options.program = prog
     options.version = version
     if args:
