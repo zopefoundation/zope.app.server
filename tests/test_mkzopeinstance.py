@@ -273,7 +273,7 @@ class ControlledInputApplication(mkzopeinstance.Application):
         return not self.__input
 
 
-class Options:
+class Options(object):
 
     username = "[test-username]"
     password = "[test-password]"
