@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.app.publication.ftp import FTPPublication
 from zope.app.publication.interfaces import IPublicationRequestFactory
 from zope.publisher.ftp import FTPRequest
@@ -24,7 +23,7 @@ from zope.server.ftp.publisher import PublisherFTPServer
 from zope.app.server.servertype import ServerType
 import zope.interface
 
-class FTPRequestFactory:
+class FTPRequestFactory(object):
     """FTP Request factory
 
     FTP request factories for a given database create FTP requets with

@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""e.py,v 1.1.2.2 2002/04/02 02:20:40 srichter Exp $
-"""
+"""Server Type
 
+$Id$
+"""
 from zope.interface import Interface, implements
 
 
@@ -26,7 +27,7 @@ class IServerType(Interface):
         """Create the server knowing the port, task dispatcher and the ZODB.
         """
 
-class ServerType:
+class ServerType(object):
 
     implements(IServerType)
 

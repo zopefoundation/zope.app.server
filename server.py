@@ -11,19 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Datatype for a <server> section in a Zope 3 configuration file.
 
 This is called by the ZConfig machinery while processing a configuration.
 
 $Id$
 """
-
-
 from zope.app import zapi
 from zope.app.server.servertype import IServerType
 
-class ServerFactory:
+class ServerFactory(object):
     """Factory for server objects.
 
     The factories are part of the configuration data returned by

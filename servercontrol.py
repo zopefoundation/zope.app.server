@@ -19,7 +19,7 @@ from ThreadedAsync import LoopCallback
 from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.interface import implements
 
-class ServerControl:
+class ServerControl(object):
 
     implements(IServerControl)
 

@@ -52,7 +52,7 @@ def main(argv=None):
         return e.code
 
 
-class Application:
+class Application(object):
 
     def __init__(self, options):
         self.options = options
