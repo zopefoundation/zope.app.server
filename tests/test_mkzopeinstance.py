@@ -161,6 +161,7 @@ class InputCollectionTestCase(TestBase):
         self.assertEqual(skel, "foo")
         self.assertEqual(input, [])
         self.assert_(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
 
     def test_process_creates_destination(self):
         options = self.createOptions()
@@ -169,6 +170,7 @@ class InputCollectionTestCase(TestBase):
         self.assertEqual(app.process(), 0)
         self.assert_(os.path.isdir(self.instance))
         self.assertEqual(input, [])
+        self.failUnless(app.all_input_consumed())
 
     def test_process_aborts_on_file_destination(self):
         options = self.createOptions()
@@ -185,6 +187,76 @@ class InputCollectionTestCase(TestBase):
         self.assertEqual(app.process(), 1)
         self.assert_(self.stderr.getvalue())
 
+    def test_get_username(self):
+        options = self.createOptions()
+        app = ControlledInputApplication(options, ["myuser"])
+        usr = app.get_username()
+        self.assertEqual(usr, "myuser")
+        self.failIf(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_username_strips_whitespace(self):
+        options = self.createOptions()
+        app = ControlledInputApplication(options, ["  myuser\t"])
+        usr = app.get_username()
+        self.assertEqual(usr, "myuser")
+        self.failIf(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_username_ignores_empty_names(self):
+        options = self.createOptions()
+        app = ControlledInputApplication(options, ["", "  ", "\t", "myuser"])
+        usr = app.get_username()
+        self.assertEqual(usr, "myuser")
+        self.failUnless(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_password(self):
+        options = self.createOptions()
+        app = ControlledInputApplication(options, ["foo", "foo"])
+        pw = app.get_password()
+        self.assertEqual(pw, "foo")
+        self.failIf(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_password_not_verified(self):
+        options = self.createOptions()
+        app = ControlledInputApplication(options, ["foo", "bar"])
+        try:
+            app.get_password()
+        except SystemExit, e:
+            self.assertEqual(e.code, 1)
+        else:
+            self.fail("expected SystemExit")
+        self.failUnless(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_password_empty(self):
+        # Make sure the empty password is ignored.
+        options = self.createOptions()
+        app = ControlledInputApplication(options, ["", "foo", "foo"])
+        pw = app.get_password()
+        self.assertEqual(pw, "foo")
+        self.failUnless(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_password_disallows_whitespace(self):
+        # Any password that contains spaces is disallowed.
+        options = self.createOptions()
+        app = ControlledInputApplication(options, [" ", "\t", "a b",
+                                                   " a", "b ", "foo", "foo"])
+        pw = app.get_password()
+        self.assertEqual(pw, "foo")
+        self.failUnless(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
 
 class ControlledInputApplication(mkzopeinstance.Application):
 
@@ -194,6 +266,11 @@ class ControlledInputApplication(mkzopeinstance.Application):
 
     def read_input_line(self, prompt):
         return self.__input.pop(0)
+
+    read_password = read_input_line
+
+    def all_input_consumed(self):
+        return not self.__input
 
 
 class Options:

@@ -44,17 +44,34 @@ def main(argv=None):
         else:
             return 0
     app = Application(options)
-    return app.process()
+    try:
+        return app.process()
+    except KeyboardInterrupt:
+        return 1
+    except SystemExit, e:
+        return e.code
 
 
 class Application:
 
     def __init__(self, options):
         self.options = options
+        self.need_blank_line = False
 
     def read_input_line(self, prompt):
         # The tests replace this to make sure the right things happen.
         return raw_input(prompt)
+
+    def read_password(self, prompt):
+        # The tests replace this to make sure the right things happen.
+        import getpass
+        try:
+            return getpass.getpass(prompt)
+        except KeyboardInterrupt:
+            # The cursor was left on the same line as the prompt,
+            # which we don't like.  Print a blank line.
+            print
+            raise
 
     def process(self):
         options = self.options
@@ -81,28 +98,57 @@ class Application:
                                  " non-directories)")
             return 1
 
-        # XXX for now, bail if the username/password hasn't been
-        # provided from the command line; this should be improved
-        # after the ZopeX3 alpha:
-        if not (options.username and options.password):
-            print >>sys.stderr, ("username and password must be"
-                                 " provided using the --user option")
-            return 2
+        if not options.username:
+            options.username = self.get_username()
+        if not options.password:
+            options.password = self.get_password()
 
         # now create the instance!
         self.copy_skeleton()
         return 0
 
     def get_skeltarget(self):
-        print SKELTARGET_MESSAGE
+        self.print_message(SKELTARGET_MESSAGE)
+        self.need_blank_line = True
         while 1:
             skeltarget = self.read_input_line("Directory: ").strip()
             if skeltarget == '':
                 print >>sys.stderr, 'You must specify a directory'
                 continue
-            else:
-                break
-        return os.path.expanduser(skeltarget)
+            return os.path.expanduser(skeltarget)
+
+    def get_username(self):
+        self.print_message(USERNAME_MESSAGE)
+        self.need_blank_line = True
+        while 1:
+            username = self.read_input_line("Username: ").strip()
+            if not username:
+                print >>sys.stderr, "You must specify an administrative user"
+                continue
+            return username
+
+    def get_password(self):
+        self.print_message(PASSWORD_MESSAGE)
+        while 1:
+            password = self.read_password("Password: ")
+            if not password:
+                print >>sys.stderr, "Password may not be empty"
+                continue
+            if password != password.strip() or password.split() != [password]:
+                print >>sys.stderr, "Password may not contain spaces"
+                continue
+            break
+        again = self.read_password("Verify password: ")
+        if again != password:
+            print >>sys.stderr, "Password not verified!"
+            sys.exit(1)
+        return password
+
+    def print_message(self, message):
+        if self.need_blank_line:
+            print
+            self.need_blank_line = False
+        print message
 
     def copy_skeleton(self):
         options = self.options
@@ -127,6 +173,8 @@ class Application:
         # instead of shutil.copy2().
         assert os.path.isdir(dst), dst
         names = os.listdir(src)
+        if ".svn" in names:
+            names.remove(".svn")
         for name in names:
             srcname = os.path.join(src, name)
             dstname = os.path.join(dst, name)
@@ -157,6 +205,15 @@ SKELTARGET_MESSAGE = """\
 Please choose a directory in which you'd like to install Zope
 'instance home' files such as database files, configuration files,
 etc.
+"""
+
+USERNAME_MESSAGE = """\
+Please choose a username for the initial administrator account.
+This is required to allow Zope's management interface to be used.
+"""
+
+PASSWORD_MESSAGE = """\
+Please provide a password for the initial administrator account.
 """
 
 
