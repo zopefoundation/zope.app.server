@@ -67,6 +67,10 @@ def doctest_ServerType():
 
     The 'defaultVerbose' argument specifies the default verbosity.
 
+    The 'defaultIP' argument specifies the network interface for listening on.
+    You can specify the network interface IP address, or an empty string if you
+    want to listen on all interfaces.
+
         >>> from zope.app.server.servertype import IServerType
         >>> from zope.app.server.servertype import ServerType
         >>> st = ServerType(factory, requestFactory, logFactory,
@@ -103,6 +107,14 @@ def doctest_ServerType():
         This server will use my request factory for my database to construct requests
         This server will use my logger for hit logging
         This server will be verbose
+        This server will be managed by my task dispatcher
+
+        >>> st.create('Sample Server 3', dispatcher, db, port=9090,
+        ...           ip='127.0.0.1')
+        Starting a server (Sample Server 3) on 127.0.0.1:9090
+        This server will use my request factory for my database to construct requests
+        This server will use my logger for hit logging
+        This server will not be verbose
         This server will be managed by my task dispatcher
 
     """

@@ -19,11 +19,13 @@ from zope.interface import Interface, implements
 
 
 class IServerType(Interface):
-    """This is a pure read-only interface, since the values are set through
-       a ZCML directive and we shouldn't be able to change them.
+    """Server type utility.
+
+    This is a pure read-only interface, since the values are set through
+    a ZCML directive and we shouldn't be able to change them.
     """
 
-    def create(name, task_dispatcher, db, port=None, verbose=None):
+    def create(name, task_dispatcher, db, port=None, verbose=None, ip=None):
         """Create the server knowing the port, task dispatcher and the ZODB.
 
         Returns the new server.
@@ -34,15 +36,17 @@ class ServerType(object):
     implements(IServerType)
 
     def __init__(self, factory, requestFactory, logFactory,
-                 defaultPort, defaultVerbose):
+                 defaultPort, defaultVerbose, defaultIP=''):
         self._factory = factory
         self._requestFactory = requestFactory
         self._logFactory = logFactory
         self._defaultPort = defaultPort
         self._defaultVerbose = defaultVerbose
+        self._defaultIP = defaultIP
 
 
-    def create(self, name, task_dispatcher, db, port=None, verbose=None):
+    def create(self, name, task_dispatcher, db, port=None,
+               verbose=None, ip=None):
         'See IServerType'
 
         request_factory = self._requestFactory(db)
@@ -50,10 +54,13 @@ class ServerType(object):
         if port is None:
             port = self._defaultPort
 
+        if ip is None:
+            ip = self._defaultIP
+
         if verbose is None:
             verbose = self._defaultVerbose
 
-        return self._factory(request_factory, name, '', port,
+        return self._factory(request_factory, name, ip, port,
                       task_dispatcher=task_dispatcher,
                       verbose=verbose,
                       hit_log=self._logFactory(),
