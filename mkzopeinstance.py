@@ -183,7 +183,7 @@ class Application:
                 self.copytree(srcname, dstname)
             else:
                 self.copyfile(srcname, dstname)
-            # XXX What about devices, sockets etc.?
+            # There shouldn't be any need to deal with devices, sockets etc.
 
     def copyfile(self, src, dst):
         if dst.endswith(".in"):
