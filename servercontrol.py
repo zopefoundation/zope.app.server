@@ -25,7 +25,7 @@ class ServerControl:
 
     def shutdown(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""
-        # XXX: Graceful shutdown does not work yet.
+        # TODO: Graceful shutdown does not work yet.
 
         # This will work for servers started directly and by zdaemon. Passing
         # an exit status of 0 causes zdaemon to not restart the process.
@@ -33,9 +33,9 @@ class ServerControl:
 
     def restart(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""
-        # XXX: Graceful restart does not work yet.
+        # TODO: Graceful restart does not work yet.
 
-        # XXX: Make sure this is only called if we are running via zdaemon.
+        # TODO: Make sure this is only called if we are running via zdaemon.
 
         # Passing an exit status of 1 causes zdaemon to restart the process.
         LoopCallback.exit_status = 1
