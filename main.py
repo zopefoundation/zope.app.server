@@ -110,3 +110,5 @@ def setup(options):
         server.create(task_dispatcher, db)
 
     notify(zope.app.appsetup.ProcessStarting())
+
+    return db
