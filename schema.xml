@@ -11,6 +11,7 @@
 
   <!-- logging configuration -->
   <import package="ZConfig.components.logger" />
+  <import package="zope.app.server" file="accesslog.xml" />
 
   <sectiontype name="server" datatype="zope.app.server.server.ServerFactory">
     <key name="type" required="yes" />
