@@ -50,7 +50,7 @@ def main(args=None):
     t0 = time.time()
     c0 = time.clock()
 
-    setup(args)
+    setup(load_options(args))
 
     t1 = time.time()
     c1 = time.clock()
@@ -58,6 +58,16 @@ def main(args=None):
 
     run()
     sys.exit(0)
+
+
+def debug(args=None):
+    options = load_options(args)
+
+    zope.app.appsetup.config(options.site_definition)
+
+    db = options.database.open()
+    notify(zope.app.appsetup.DatabaseOpened(db))
+    return db
 
 
 def run():
@@ -68,7 +78,7 @@ def run():
         pass
 
 
-def setup(args=None):
+def load_options(args=None):
     if args is None:
         args = sys.argv[1:]
     options = ZopeOptions()
@@ -78,7 +88,10 @@ def setup(args=None):
 
     if options.path:
         sys.path[:0] = [os.path.abspath(p) for p in options.path]
+    return options
 
+
+def setup(options):
     sys.setcheckinterval(options.check_interval)
 
     options.eventlog()
