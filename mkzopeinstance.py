@@ -249,6 +249,7 @@ def parse_args(argv):
     p.add_option("-u", "--user", dest="username", metavar="USER:PASSWORD",
                  help="set the user name and password of the initial user")
     options, args = p.parse_args(argv[1:])
+    options.from_checkout = False
     options.program = prog
     options.version = version
     if args:
