@@ -44,5 +44,5 @@ class ServerFactory:
         servertype.create(
             self.type,
             task_dispatcher, database,
-            self.address[1], # XXX maybe improve API
+            self.address[1],
             self.verbose)
