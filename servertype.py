@@ -23,7 +23,7 @@ class IServerType(Interface):
        a ZCML directive and we shouldn't be able to change them.
     """
 
-    def create(task_dispatcher, db, port=None, verbose=None):
+    def create(name, task_dispatcher, db, port=None, verbose=None):
         """Create the server knowing the port, task dispatcher and the ZODB.
 
         Returns the new server.
