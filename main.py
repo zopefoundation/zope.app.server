@@ -84,6 +84,7 @@ def setup(args=None):
     sys.setcheckinterval(options.check_interval)
 
     options.eventlog()
+    options.hitlog()
 
     zope.app.appsetup.config(options.site_definition)
 

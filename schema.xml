@@ -31,6 +31,12 @@
     </description>
   </section>
 
+  <section type="hitlog" attribute="hitlog" name="*">
+    <description>
+      Configuration for the hit log.
+    </description>
+  </section>
+
   <multisection type="server" name="*" attribute="servers" />
 
   <key name="site-definition" default="site.zcml">
