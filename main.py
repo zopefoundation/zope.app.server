@@ -26,7 +26,7 @@ from zdaemon import zdoptions
 import ThreadedAsync
 
 import zope.app.appsetup
-from zope.app.event import publish
+from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
 CONFIG_FILENAME = "zope.conf"
@@ -89,7 +89,7 @@ def setup(args=None):
 
     db = options.database.open()
 
-    publish(None, zope.app.appsetup.DatabaseOpened(db))
+    notify(zope.app.appsetup.DatabaseOpened(db))
 
     task_dispatcher = ThreadedTaskDispatcher()
     task_dispatcher.setThreadCount(options.threads)
@@ -97,4 +97,4 @@ def setup(args=None):
     for server in options.servers:
         server.create(task_dispatcher, db)
 
-    publish(None, zope.app.appsetup.ProcessStarting())
+    notify(zope.app.appsetup.ProcessStarting())
