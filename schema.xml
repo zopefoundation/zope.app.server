@@ -25,13 +25,13 @@
     </description>
   </section>
 
-  <section type="eventlog" attribute="eventlog" name="*">
+  <section type="eventlog" attribute="eventlog" name="*" required="yes">
     <description>
       Configuration for the event log.
     </description>
   </section>
 
-  <section type="hitlog" attribute="hitlog" name="*">
+  <section type="hitlog" attribute="hitlog" name="*" required="yes">
     <description>
       Configuration for the hit log.
     </description>
