@@ -31,9 +31,10 @@
     </description>
   </section>
 
-  <section type="hitlog" attribute="hitlog" name="*" required="yes">
+  <section type="ZConfig.logger.accesslog" attribute="accesslog" name="*"
+           required="yes">
     <description>
-      Configuration for the hit log.
+      Configuration for the access log.
     </description>
   </section>
 

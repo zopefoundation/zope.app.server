@@ -18,16 +18,16 @@ $Id$
 
 from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.server.servertype import ServerType
-from zope.server.http.commonhitlogger import CommonHitLogger
+from zope.server.http.commonaccesslogger import CommonAccessLogger
 from zope.server.http.publisherhttpserver import PMDBHTTPServer
 from zope.server.http.publisherhttpserver import PublisherHTTPServer
 
 http = ServerType(PublisherHTTPServer,
                   HTTPPublicationRequestFactory,
-                  CommonHitLogger,
+                  CommonAccessLogger,
                   8080, True)
 
 pmhttp = ServerType(PMDBHTTPServer,
                     HTTPPublicationRequestFactory,
-                    CommonHitLogger,
+                    CommonAccessLogger,
                     8013, True)
