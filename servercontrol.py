@@ -13,7 +13,7 @@
 ##############################################################################
 """Server Control Implementation
 
-$Id: servercontrol.py,v 1.1 2004/03/23 15:52:13 srichter Exp $
+$Id$
 """
 from ThreadedAsync import LoopCallback
 from zope.app.applicationcontrol.interfaces import IServerControl
