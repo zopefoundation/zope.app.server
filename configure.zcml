@@ -1,70 +1,25 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:startup="http://namespaces.zope.org/startup"
-   xmlns:event="http://namespaces.zope.org/event"
-   >
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <utility 
       component=".servercontrol.serverControl"
       provides="zope.app.applicationcontrol.interfaces.IServerControl" />
 
-  <startup:registerRequestFactory 
-      name="HTTPRequestFactory"
-      factory="zope.app.publication.httpfactory"/>
-
-  <startup:registerRequestFactory 
-      name="BrowserRequestFactory"
-      publication="zope.app.publication.browser.BrowserPublication"
-      request="zope.publisher.browser.BrowserRequest" />
-
-  <startup:registerRequestFactory 
-      name="XMLRPCRequestFactory" 
-      publication="zope.app.publication.xmlrpc.XMLRPCPublication"
-      request="zope.publisher.xmlrpc.XMLRPCRequest"/>
-
-  <startup:registerRequestFactory 
-      name="FTPRequestFactory"
-      publication="zope.app.publication.ftp.FTPPublication"
-      request="zope.publisher.ftp.FTPRequest"/>
-
-  <startup:registerServerType 
+  <utility
       name="HTTP"
-      factory="zope.server.http.publisherhttpserver.PublisherHTTPServer"
-      requestFactory="HTTPRequestFactory"
-      logFactory="zope.server.http.commonhitlogger.CommonHitLogger"
-      defaultPort="8080"
-      defaultVerbose="true" />
+      component=".http.http"
+      provides=".servertype.IServerType"
+      />
 
-  <startup:registerServerType 
+  <utility
       name="PostmortemDebuggingHTTP"
-      factory="zope.server.http.publisherhttpserver.PMDBHTTPServer"
-      requestFactory="HTTPRequestFactory"
-      logFactory="zope.server.http.commonhitlogger.CommonHitLogger"
-      defaultPort="8013"
-      defaultVerbose="true" />
+      component=".http.pmhttp"
+      provides=".servertype.IServerType"
+      />
 
-  <startup:registerServerType 
-      name="Browser"
-      factory="zope.server.http.publisherhttpserver.PublisherHTTPServer"
-      requestFactory="BrowserRequestFactory"
-      logFactory="zope.server.http.commonhitlogger.CommonHitLogger"
-      defaultPort="8080"
-      defaultVerbose="true" />
-
-  <startup:registerServerType 
-      name="XML-RPC"
-      factory="zope.server.http.publisherhttpserver.PublisherHTTPServer"
-      requestFactory="XMLRPCRequestFactory"
-      logFactory="zope.server.http.commonhitlogger.CommonHitLogger"
-      defaultPort="8081"
-      defaultVerbose="true" />
-
-  <startup:registerServerType 
+  <utility
       name="FTP"
-      factory="zope.server.ftp.publisher.PublisherFTPServer"
-      requestFactory="FTPRequestFactory"
-      logFactory="zope.server.ftp.logger.CommonFTPActivityLogger"
-      defaultPort="8021"
-      defaultVerbose="true" />
+      component=".ftp.server"
+      provides=".servertype.IServerType"
+      />
 
 </configure>

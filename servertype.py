@@ -15,7 +15,6 @@
 """
 
 from zope.interface import Interface, implements
-from zope.app.server.requestfactoryregistry import getRequestFactory
 
 
 class IServerType(Interface):
@@ -31,10 +30,8 @@ class ServerType:
 
     implements(IServerType)
 
-    def __init__(self, name, factory, requestFactory, logFactory,
+    def __init__(self, factory, requestFactory, logFactory,
                  defaultPort, defaultVerbose):
-        """ """
-        self._name = name
         self._factory = factory
         self._requestFactory = requestFactory
         self._logFactory = logFactory
@@ -42,11 +39,10 @@ class ServerType:
         self._defaultVerbose = defaultVerbose
 
 
-    def create(self, task_dispatcher, db, port=None, verbose=None):
+    def create(self, name, task_dispatcher, db, port=None, verbose=None):
         'See IServerType'
 
-        request_factory = getRequestFactory(self._requestFactory)
-        request_factory = request_factory.realize(db)
+        request_factory = self._requestFactory(db)
 
         if port is None:
             port = self._defaultPort
@@ -54,8 +50,8 @@ class ServerType:
         if verbose is None:
             verbose = self._defaultVerbose
 
-        apply(self._factory,
-              (request_factory, self._name, '', port),
-              {'task_dispatcher': task_dispatcher,
-               'verbose': verbose,
-               'hit_log': self._logFactory()})
+        self._factory(request_factory, name, '', port,
+                      task_dispatcher=task_dispatcher,
+                      verbose=verbose,
+                      hit_log=self._logFactory(),
+                      )
