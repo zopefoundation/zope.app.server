@@ -31,7 +31,7 @@
     </description>
   </section>
 
-  <section type="ZConfig.logger.accesslog" attribute="accesslog" name="*"
+  <section type="accesslog" attribute="accesslog" name="*"
            required="yes">
     <description>
       Configuration for the access log.
