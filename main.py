@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import logging
 import os
 import sys
@@ -30,7 +29,6 @@ from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
 CONFIG_FILENAME = "zope.conf"
-
 
 class ZopeOptions(zdoptions.ZDOptions):
 
