@@ -25,6 +25,8 @@ class IServerType(Interface):
 
     def create(task_dispatcher, db, port=None, verbose=None):
         """Create the server knowing the port, task dispatcher and the ZODB.
+
+        Returns the new server.
         """
 
 class ServerType(object):
@@ -51,7 +53,7 @@ class ServerType(object):
         if verbose is None:
             verbose = self._defaultVerbose
 
-        self._factory(request_factory, name, '', port,
+        return self._factory(request_factory, name, '', port,
                       task_dispatcher=task_dispatcher,
                       verbose=verbose,
                       hit_log=self._logFactory(),

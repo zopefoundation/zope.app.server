@@ -38,7 +38,7 @@ class ServerFactory(object):
 
         servertype = zapi.getUtility(IServerType, self.type)
         # The server object self-registers with the asyncore mainloop.
-        servertype.create(
+        return servertype.create(
             self.type,
             task_dispatcher, database,
             self.address[1],
