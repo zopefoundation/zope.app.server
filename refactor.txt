@@ -1,0 +1,18 @@
+The code here and in zope._app is more complicated than it needs to be.
+
+Here's what I want to do:
+
+- Move the definition of request and server factories to Python
+
+- Register the server factories (aka server types) as utilities.
+  
+
+These let us rip out most of the code here. :)
+
+Move the rest of the code here to zope.app.server.  The
+zope.app.server package is just tha zope.app. customization of
+zope.server.
+
+Rename zope._app to zope.app.debug. Move the config function from
+zope.app.debug into zope.app.setup.  Move the bootstrap code to
+zope.app.setup.

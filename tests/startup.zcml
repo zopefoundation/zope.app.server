@@ -1,0 +1,23 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:startup="http://namespaces.zope.org/startup">
+
+  <include package="zope.app.server" file="meta.zcml"/>
+
+  <startup:registerServerType
+      name="Browser"
+      factory="zope.server.http.publisherhttpserver.PublisherHTTPServer"
+      requestFactory="BrowserRequestFactory"
+      logFactory="zope.server.http.commonhitlogger.CommonHitLogger"
+      defaultPort="8080"
+      defaultVerbose="true" />
+
+  <startup:registerRequestFactory
+      name="BrowserRequestFactory"
+      publication="zope.app.publication.browser.BrowserPublication"
+      request="zope.publisher.browser.BrowserRequest"/>
+
+  <startup:registerRequestFactory
+      name="BrowserRequestFactory2"
+      factory="zope.app.server.tests.test_directives.tf"/>
+ 
+</configure>
