@@ -37,13 +37,12 @@ def main(argv=None, from_checkout=False):
     if argv is None:
         argv = sys.argv
     try:
-        options = parse_args(argv)
+        options = parse_args(argv, from_checkout)
     except SystemExit, e:
         if e.code:
             return 2
         else:
             return 0
-    options.from_checkout = from_checkout
     app = Application(options)
     try:
         return app.process()
@@ -106,7 +105,7 @@ class Application(object):
 
         # now create the instance!
         self.copy_skeleton()
-        if options.from_checkout:
+        if options.add_package_includes:
             # need to copy ZCML differently since it's not in the skeleton:
             import __main__
             swhome = os.path.dirname(
@@ -231,12 +230,9 @@ Please provide a password for the initial administrator account.
 """
 
 
-def parse_args(argv):
+def parse_args(argv, from_checkout=False):
     """Parse the command line, returning an object representing the input."""
     path, prog = os.path.split(os.path.realpath(argv[0]))
-    basedir = os.path.dirname(path)
-    # no assurance that this exists!
-    default_skeleton = os.path.join(basedir, "zopeskel")
     version = "%prog for " + zopeversion.ZopeVersionUtility.getZopeVersion()
     p = optparse.OptionParser(prog=prog,
                               usage="%prog [options]",
@@ -244,12 +240,17 @@ def parse_args(argv):
     p.add_option("-d", "--dir", dest="destination", metavar="DIR",
                  help="the dir in which the instance home should be created")
     p.add_option("-s", "--skelsrc", dest="skeleton", metavar="DIR",
-                 default=default_skeleton,
                  help="template skeleton directory")
     p.add_option("-u", "--user", dest="username", metavar="USER:PASSWORD",
                  help="set the user name and password of the initial user")
     options, args = p.parse_args(argv[1:])
-    options.from_checkout = False
+    if options.skeleton is None:
+        options.add_package_includes = from_checkout
+        basedir = os.path.dirname(path)
+        # no assurance that this exists!
+        options.skeleton = os.path.join(basedir, "zopeskel")
+    else:
+        options.add_package_includes = False
     options.program = prog
     options.version = version
     if args:

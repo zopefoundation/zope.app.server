@@ -96,10 +96,12 @@ class ArgumentParsingTestCase(TestBase):
     def test_with_skeleton_long(self):
         options = self.parse_args(["--skelsrc", "some/dir"])
         self.assertEqual(options.skeleton, "some/dir")
+        self.failIf(options.add_package_includes)
 
     def test_with_skeleton_short(self):
         options = self.parse_args(["-s", "some/dir"])
         self.assertEqual(options.skeleton, "some/dir")
+        self.failIf(options.add_package_includes)
 
     def test_without_username(self):
         options = self.parse_args([])
@@ -280,7 +282,7 @@ class Options(object):
     destination = None
     version = "[test-version]"
     program = "[test-program]"
-    from_checkout = False
+    add_package_includes = False
 
 
 def test_suite():
