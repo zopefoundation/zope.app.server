@@ -70,11 +70,11 @@ def doctest_ServerFactory():
     The settings actually work
 
         >>> my_section.type = 'FTP'
-        >>> my_section.address = ('', 8021)
+        >>> my_section.address = ('127.0.0.1', 8021)
         >>> my_section.verbose = True
         >>> sf = ServerFactory(my_section)
         >>> print sf.create(task_dispatcher, db)
-        FTP server on *:8021, registered with my task dispatcher,
+        FTP server on 127.0.0.1:8021, registered with my task dispatcher,
         serving from my db, verbosity True
 
     That's it.

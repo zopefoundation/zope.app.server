@@ -41,5 +41,6 @@ class ServerFactory(object):
         return servertype.create(
             self.type,
             task_dispatcher, database,
-            self.address[1],
-            self.verbose)
+            ip=self.address[0],
+            port=self.address[1],
+            verbose=self.verbose)
