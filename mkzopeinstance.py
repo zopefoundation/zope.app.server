@@ -165,7 +165,7 @@ def parse_args(argv):
     path, prog = os.path.split(os.path.realpath(argv[0]))
     basedir = os.path.dirname(path)
     # no assurance that this exists!
-    default_skeleton = os.path.join(basedir, "skel")
+    default_skeleton = os.path.join(basedir, "zopeskel")
     version = "%prog for " + zopeversion.ZopeVersionUtility.getZopeVersion()
     p = optparse.OptionParser(prog=prog,
                               usage="%prog [options]",
