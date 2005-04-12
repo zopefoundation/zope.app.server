@@ -1,0 +1,67 @@
+##############################################################################
+#
+# Copyright (c) 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""WSGI-compliant HTTP server setup.
+
+$Id$
+"""
+__docformat__ = "reStructuredText"
+
+import zope.interface
+from zope.server.http.commonaccesslogger import CommonAccessLogger
+from zope.server.http.wsgihttpserver import WSGIHTTPServer
+
+from zope.app.wsgi import WSGIPublisherApplication
+
+import servertype
+
+class ServerType(object):
+
+    zope.interface.implements(servertype.IServerType)
+
+    def __init__(self, factory, applicationFactory, logFactory,
+                 defaultPort, defaultVerbose, defaultIP=''):
+        self._factory = factory
+        self._applicationFactory = applicationFactory
+        self._logFactory = logFactory
+        self._defaultPort = defaultPort
+        self._defaultVerbose = defaultVerbose
+        self._defaultIP = defaultIP
+
+
+    def create(self, name, task_dispatcher, db, port=None,
+               verbose=None, ip=None):
+        'See IServerType'
+
+        application = self._applicationFactory(db)
+
+        if port is None:
+            port = self._defaultPort
+
+        if ip is None:
+            ip = self._defaultIP
+
+        if verbose is None:
+            verbose = self._defaultVerbose
+
+        return self._factory(application, name, ip, port,
+                      task_dispatcher=task_dispatcher,
+                      verbose=verbose,
+                      hit_log=self._logFactory(),
+                      )
+
+
+http = ServerType(WSGIHTTPServer,
+                  WSGIPublisherApplication,
+                  CommonAccessLogger,
+                  8080, True)

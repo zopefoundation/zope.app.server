@@ -17,6 +17,12 @@
       />
 
   <utility
+      name="WSGI-HTTP"
+      component=".wsgi.http"
+      provides=".servertype.IServerType"
+      />
+
+  <utility
       name="FTP"
       component=".ftp.server"
       provides=".servertype.IServerType"
