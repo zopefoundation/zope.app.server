@@ -24,14 +24,14 @@ from zdaemon import zdoptions
 
 import twisted.web2.wsgi
 import twisted.web2.server
-import twisted.application.service
-import twisted.application.strports
+from twisted.application import service
 from twisted.internet import reactor
+
+from zope.event import notify
 
 import zope.app.appsetup
 import zope.app.appsetup.interfaces
 from zope.app import wsgi
-from zope.event import notify
 
 CONFIG_FILENAME = "zope.conf"
 
@@ -50,18 +50,29 @@ class ZopeOptions(zdoptions.ZDOptions):
         return None
 
 
+class ZopeService(service.MultiService):
+
+    def startService(self):
+        notify(zope.app.appsetup.interfaces.ProcessStarting())
+        service.MultiService.startService(self)
+
+    # can override stopService or similar to implement shutdown event later.
+
+
 def main(args=None):
     # Record start times (real time and CPU time)
     t0 = time.time()
     c0 = time.clock()
 
-    setup(load_options(args))
+    service = setup(load_options(args))
+    service.startService()
+    reactor.addSystemEventTrigger('before', 'shutdown', service.stopService)
 
     t1 = time.time()
     c1 = time.clock()
     logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
 
-    run()
+    reactor.run()
     sys.exit(0)
 
 
@@ -73,14 +84,6 @@ def debug(args=None):
     db = options.database.open()
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
     return db
-
-
-def run():
-    try:
-        reactor.run()
-    except KeyboardInterrupt:
-        # Exit without spewing an exception.
-        pass
 
 
 def load_options(args=None):
@@ -108,18 +111,13 @@ def setup(options):
 
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
 
-    # Simple setup of a WSGI-based Twisted HTTP server
-    resource = twisted.web2.wsgi.WSGIResource(
-        wsgi.WSGIPublisherApplication(db))
+    # Set number of threads
+    reactor.suggestThreadPoolSize(options.threads)
 
-    reactor.listenTCP(8080, twisted.web2.server.Site(resource))
+    rootService = ZopeService()
 
-    #task_dispatcher = ThreadedTaskDispatcher()
-    #task_dispatcher.setThreadCount(options.threads)
-    #
-    #for server in options.servers:
-    #    server.create(task_dispatcher, db)
+    for server in options.servers + options.sslservers:
+        service = server.create(db)
+        service.setServiceParent(rootService)
 
-    notify(zope.app.appsetup.interfaces.ProcessStarting())
-
-    return db
+    return rootService

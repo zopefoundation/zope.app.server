@@ -1,0 +1,33 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility 
+      component=".servercontrol.serverControl"
+      provides="zope.app.applicationcontrol.interfaces.IServerControl" />
+
+  <utility
+      name="HTTP"
+      component=".http.http"
+      provides=".interfaces.IServerType"
+      />
+
+  <utility
+      name="HTTPS"
+      component=".http.https"
+      provides=".interfaces.IServerType"
+      />
+
+  <utility
+      name="PostmortemDebuggingHTTP"
+      component=".http.pmhttp"
+      provides=".interfaces.IServerType"
+      />
+
+<!--
+  <utility
+      name="FTP"
+      component=".ftp.server"
+      provides=".interfaces.IServerType"
+      />
+-->
+
+</configure>
