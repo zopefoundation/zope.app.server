@@ -34,12 +34,12 @@ http = ServerType(createHTTPFactory, 8080)
 https = SSLServerType(createHTTPFactory, 8443)
 
 
-def createHTTPFactory(db):
+def createPMHTTPFactory(db):
     resource = twisted.web2.wsgi.WSGIResource(
         wsgi.PMDBWSGIPublisherApplication(db))
     
     return twisted.web2.server.Site(resource)
 
-pmhttp = ServerType(createHTTPFactory, 8080)
+pmhttp = ServerType(createPMHTTPFactory, 8080)
 
 
