@@ -32,6 +32,7 @@ from zope.event import notify
 import zope.app.appsetup
 import zope.app.appsetup.interfaces
 from zope.app import wsgi
+from zope.app.server import log
 
 CONFIG_FILENAME = "zope.conf"
 
@@ -104,6 +105,10 @@ def setup(options):
 
     options.eventlog()
     options.accesslog()
+
+    # Setup the logs. Eventually this might be better done using utilities.
+    observer = log.CommonAccessLoggingObserver()
+    observer.start()
 
     zope.app.appsetup.config(options.site_definition)
 

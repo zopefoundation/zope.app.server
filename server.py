@@ -19,12 +19,12 @@ $Id$
 """
 import logging
 
+from twisted.application import internet
+from twisted.internet import reactor, interfaces
+
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.server.interfaces import IServerType, ISSLServerType
-
-from twisted.application import internet
-from twisted.internet import reactor, interfaces
 
 class SSLNotSupported(Exception):
     ''' '''
