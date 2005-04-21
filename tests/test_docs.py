@@ -51,6 +51,9 @@ def test_suite():
                              setUp=setUp, tearDown=tearDown,
                              globs={'pprint': doctestunit.pprint},
                              optionflags=doctest.NORMALIZE_WHITESPACE),
+        doctest.DocFileSuite('../log.txt',
+                             globs={'pprint': doctestunit.pprint},
+                             optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 
 

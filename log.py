@@ -81,13 +81,14 @@ class CommonAccessLoggingObserver(object):
             request.method,
             request.uri,
             '.'.join([str(x) for x in request.clientproto]))
-
+        
         self.logger.log(logging.INFO,
             '%s - %s [%s] "%s" %s %d "%s" "%s"' %(
                 request.chanRequest.transport.client[0],
                 request.response.headers.getRawHeaders(
                     'x-zope-principal', ['anonymous'])[-1],
-                self.logDateString(response.headers.getHeader('date', 0)),
+                self.logDateString(
+                    request.response.headers.getHeader('date', time.time())),
                 firstLine,
                 request.response.code,
                 request.bytesSent,
