@@ -57,7 +57,7 @@ class FTPRealm(object):
             avatar.logout = self.logout
             return ftp.IFTPShell, avatar, avatar.logout
         raise NotImplementedError, \
-                  "Only IFTPShell interface is supported by this realm")
+                  "Only IFTPShell interface is supported by this realm"
 
 class FTPFactory(ftp.FTPFactory):
     allowAnonymous = False

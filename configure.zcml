@@ -22,12 +22,10 @@
       provides=".interfaces.IServerType"
       />
 
-<!--
   <utility
       name="FTP"
       component=".ftp.server"
       provides=".interfaces.IServerType"
       />
--->
 
 </configure>
