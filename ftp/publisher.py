@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
+"""Publisher File System Implementation
+"""
+__docformat__="restructuredtext"
 import posixpath
 from cStringIO import StringIO
 

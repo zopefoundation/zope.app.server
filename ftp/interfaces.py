@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
+"""Interfaces related to the FTP server and Publisher
+"""
+__docformat__="restructuredtext"
 from zope.interface import Interface
 
 class IFileSystem(Interface):

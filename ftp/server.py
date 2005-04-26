@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Twisted-based FTP server for Zope's Publisher.
+"""
+__docformat__="restructuredtext"
 
 from zope.interface import implements
 
@@ -49,10 +52,12 @@ class FTPRealm(object):
 
     def requestAvatar(self, avatarId, mind, *interfaces):
         if ftp.IFTPShell in interfaces:
-            avatar = ZopeFTPShell(avatarId.username, avatarId.password, self.request_factory)
+            avatar = ZopeFTPShell(avatarId.username, avatarId.password,
+                                  self.request_factory)
             avatar.logout = self.logout
             return ftp.IFTPShell, avatar, avatar.logout
-        raise NotImplementedError("Only IFTPShell interface is supported by this realm")
+        raise NotImplementedError, \
+                  "Only IFTPShell interface is supported by this realm")
 
 class FTPFactory(ftp.FTPFactory):
     allowAnonymous = False
@@ -60,7 +65,8 @@ class FTPFactory(ftp.FTPFactory):
     def __init__(self, request_factory):
         r = FTPRealm(request_factory)
         p = portal.Portal(r)
-        p.registerChecker(ZopeSimpleAuthenticatation(), credentials.IUsernamePassword)
+        p.registerChecker(ZopeSimpleAuthenticatation(),
+                          credentials.IUsernamePassword)
 
         self.portal = p
 

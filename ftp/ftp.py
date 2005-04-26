@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """This module defines all the FTP shell classes
 """
+__docformat__="restructuredtext"
 
 ## cStringIO is causing me problems with unicode charactors.
 from cStringIO import StringIO
@@ -90,7 +90,8 @@ class ZopeFTPShell(object):
     implements(ftp.IFTPShell)
 
     def __init__(self, username, password, request_factory):
-        self.fs_access = PublisherFileSystem((username, password), request_factory)
+        self.fs_access = PublisherFileSystem((username, password),
+                                             request_factory)
         self._dir = '/'
 
     def mapCPathToSPath(self, path):
