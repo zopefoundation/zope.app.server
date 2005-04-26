@@ -21,90 +21,20 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import logging
-import time
-import twisted.python.log
+import twisted.web2.log
 from twisted import web2
-from zope.interface import implements
-from zope.app.http.httpdate import monthname
 
 
-class CommonAccessLoggingObserver(object):
-    """Outputs accesses in common HTTP log format."""
+class CommonAccessLoggingObserver(web2.log.BaseCommonAccessLoggingObserver):
+    """Writes common access log to python's logging framework."""
 
     def __init__(self, logger=None):
         if logger is None:
             logger = logging.getLogger('accesslog')
         self.logger = logger
 
-    def computeTimezoneForLog(self, tz):
-        if tz > 0:
-            neg = 1
-        else:
-            neg = 0
-            tz = -tz
-        h, rem = divmod (tz, 3600)
-        m, rem = divmod (rem, 60)
-        if neg:
-            return '-%02d%02d' % (h, m)
-        else:
-            return '+%02d%02d' % (h, m)
-
-    tzForLog = None
-    tzForLogAlt = None
-
-    def logDateString(self, when):
-        logtime = time.localtime(when)
-        Y, M, D, h, m, s = logtime[:6]
-        
-        if not time.daylight:
-            tz = self.tzForLog
-            if tz is None:
-                tz = self.computeTimezoneForLog(time.timezone)
-                self.tzForLog = tz
-        else:
-            tz = self.tzForLogAlt
-            if tz is None:
-                tz = self.computeTimezoneForLog(time.altzone)
-                self.tzForLogAlt = tz
-
-        return '%d/%s/%02d:%02d:%02d:%02d %s' % (
-            D, monthname[M], Y, h, m, s, tz)
-
-    def emit(self, eventDict):
-        """See zope.app.logger.interfaces.IPublisherRequestLogger"""
-        if eventDict.get('interface') is not web2.iweb.IRequest:
-            return
-
-        request = eventDict['request']
-
-        firstLine = '%s %s HTTP/%s' %(
-            request.method,
-            request.uri,
-            '.'.join([str(x) for x in request.clientproto]))
-        
-        self.logger.log(logging.INFO,
-            '%s - %s [%s] "%s" %s %d "%s" "%s"' %(
-                request.chanRequest.transport.client[0],
-                request.response.headers.getRawHeaders(
-                    'x-zope-principal', ['anonymous'])[-1],
-                self.logDateString(
-                    request.response.headers.getHeader('date', time.time())),
-                firstLine,
-                request.response.code,
-                request.bytesSent,
-                request.headers.getHeader('referer', '-'),
-                request.headers.getHeader('user-agent', '-')
-                )
-            )
-
-    def start(self):
-        """Start observing log events."""
-        twisted.python.log.addObserver(self.emit)
-
-    def stop(self):
-        """Stop observing log events."""
-        twisted.python.log.removeObserver(self.emit)
-
+    def logMessage(self, message):
+        self.logger.log(logging.INFO, message)
 
 
 class CommonFTPActivityLoggingObserver(CommonAccessLoggingObserver):

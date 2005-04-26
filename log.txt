@@ -43,16 +43,18 @@ When the system emits an arbitrary log request, the observer does nothing
   ''
 
 because it is listening only to specific log dictionaries. The dictionary must
-contain an `interface` key that specifies ``web2.iweb.IRequest`` and a `request`
-key that contains the HTTP request implementing ``web2.iweb.IRequest``:
+contain an `interface` key that specifies ``web2.iweb.IRequest``, a `request`
+key that contains the HTTP request implementing ``web2.iweb.IRequest``, and
+the `response` of the request:
 
   >>> chanRequest = http.HTTPChannelRequest(None, 'GET /index.html HTTP/1.1', 1)
   >>> chanRequest.transport.client = ('127.0.0.1', 0)
   >>> request = http.Request(chanRequest, 'GET', '/index.html', (1, 1),
   ...                        http_headers.Headers())
-  >>> request.response = http.Response()
+  >>> response = http.Response()
 
-  >>> eventDict = {'interface': iweb.IRequest, 'request': request}
+  >>> eventDict = {'interface': iweb.IRequest, 
+  ...              'request': request, 'response': response}
 
 If we now emit a log event, we should receive an entry:
 
