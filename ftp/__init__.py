@@ -11,6 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""FTP server factories.
+"""
 
 from zope.app.server.server import ServerType
 from zope.app.server.ftp.server import FTPRequestFactory, FTPFactory

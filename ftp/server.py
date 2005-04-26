@@ -18,7 +18,7 @@ __docformat__="restructuredtext"
 from zope.interface import implements
 
 from twisted.cred import portal, checkers, credentials
-from twisted.protocols import ftp
+from twisted.protocols import ftp, policies
 from twisted.internet import reactor, defer
 
 from zope.publisher.ftp import FTPRequest
@@ -59,8 +59,11 @@ class FTPRealm(object):
         raise NotImplementedError, \
                   "Only IFTPShell interface is supported by this realm"
 
-class FTPFactory(ftp.FTPFactory):
+class FTPFactory(policies.LimitTotalConnectionsFactory):
+    protocol = ftp.FTP
+    overflowProtocol = ftp.FTPOverflowProtocol
     allowAnonymous = False
+    timeOut = 600
 
     def __init__(self, request_factory):
         r = FTPRealm(request_factory)
@@ -69,6 +72,21 @@ class FTPFactory(ftp.FTPFactory):
                           credentials.IUsernamePassword)
 
         self.portal = p
+        self.instances = []
+
+    def buildProtocol(self, addr):
+        p = policies.LimitTotalConnectionsFactory.buildProtocol(self, addr)
+        if p is not None:
+            p.wrappedProtocol.portal = self.portal
+            p.wrappedProtocol.timeOut = self.timeOut
+        self.instances.append(p.wrappedProtocol)
+        return p
+
+    def stopFactory(self):
+        # make sure ftp instance's timeouts are set to None
+        # to avoid reactor complaints
+        [p.setTimeout(None) for p in self.instances if p.timeOut is not None]
+        policies.LimitTotalConnectionsFactory.stopFactory(self)
 
 class FTPRequestFactory(object):
     """FTP Request factory
