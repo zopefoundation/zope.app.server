@@ -24,7 +24,7 @@ from zope.interface import implements
 
 from twisted.protocols import ftp
 
-from zope.app.server.ftp.publisher import PublisherFileSystem
+from zope.app.server.utils import PublisherFileSystem
 
 def ls(ls_info):
     """Formats a directory entry similarly to the 'ls' command.

@@ -20,7 +20,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from fstests import FileSystemTests
 from StringIO import StringIO
 from zope.publisher.publish import mapply
-from zope.app.server.ftp.publisher import PublisherFileSystem
+from zope.app.server.utils import PublisherFileSystem
 
 class DemoFileSystem(demofs.DemoFileSystem):
 

@@ -27,6 +27,11 @@
     <key name="tls" datatype="boolean" default="false" />
   </sectiontype>
 
+  <sectiontype name="sshserver"
+               extends="server"
+               datatype="zope.app.server.server.SSHServerFactory">
+    <key name="hostkey" datatype="existing-file" required="yes" />
+  </sectiontype>
 
   <section type="ZODB.database" name="*" required="yes"
            attribute="database">
@@ -50,6 +55,7 @@
 
   <multisection type="server" name="*" attribute="servers" />
   <multisection type="sslserver" name="*" attribute="sslservers" />
+  <multisection type="sshserver" name="*" attribute="sshservers" />
 
   <key name="site-definition" default="site.zcml">
     <description>

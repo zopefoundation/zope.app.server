@@ -24,7 +24,8 @@ from twisted.internet import reactor, interfaces
 
 from zope.interface import implements
 from zope.app import zapi
-from zope.app.server.interfaces import IServerType, ISSLServerType
+from zope.app.server.interfaces import IServerType, ISSLServerType, \
+     ISSHServerType
 
 class SSLNotSupported(Exception):
     ''' '''
@@ -113,6 +114,23 @@ class SSLServerType(ServerType):
                              interface=ip, backlog=backlog)
 
 
+class SSHServerType(ServerType):
+
+    implements(ISSHServerType)
+
+    def create(self, name, db, hostkey, ip = None, port = None, backlog = 50):
+        """ """
+        if port is None:
+            port = self._defaultPort
+
+        if ip is None:
+            ip = self._defaultIP
+
+        # Given a database, create a twisted.internet.interfaces.IServerFactory
+        factory = self._factory(db, hostkey)
+        return ZopeTCPServer(name, port, factory, interface = ip,
+                             backlog = backlog)
+
 class ServerFactory(object):
     """Factory for server objects.
 
@@ -168,3 +186,27 @@ class SSLServerFactory(object):
             port=self.address[1],
             backlog=self.backlog,
             )
+
+
+class SSHServerFactory(object):
+    """Factory for SSH server objects. """
+
+    def __init__(self, section):
+        """Initialize the factory based on a <server> section."""
+        self.type = section.type
+        self.address = section.address
+        self.backlog = section.backlog
+        self.hostkey = section.hostkey
+
+    def create(self, database):
+        """Return a server based on the server types defined via ZCML."""
+
+        servertype = zapi.getUtility(IServerType, self.type)
+
+        return servertype.create(
+            self.type,
+            database,
+            hostkey = self.hostkey,
+            ip=self.address[0],
+            port=self.address[1],
+            backlog=self.backlog)

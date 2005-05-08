@@ -15,7 +15,7 @@ $Id: demofs.py 27459 2004-09-07 01:45:52Z shane $
 """
 import posixpath
 from zope.security.interfaces import Unauthorized
-from zope.app.server.ftp.interfaces import IFileSystem
+from zope.app.server.interfaces import IFileSystem
 ## from zope.server.interfaces.ftp import IFileSystemAccess
 from zope.interface import implements
 

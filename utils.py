@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Publisher File System Implementation
+"""Contains the implementation of the Publisher File System for use within
+the FTP and SFTP servers. It also contains an implementation of
+twisted.cred.checkers.ICredentialsChecker for authentiating users against
+the twisted.cred.portal.Portal.
 """
 __docformat__="restructuredtext"
 import posixpath
@@ -20,7 +23,59 @@ from cStringIO import StringIO
 from zope.interface import implements
 from zope.publisher.publish import publish
 
+from zope.publisher.ftp import FTPRequest
+from zope.app.publication.interfaces import IPublicationRequestFactory
+from zope.app.publication.ftp import FTPPublication
+
 from interfaces import IFileSystem
+
+from twisted.cred import checkers, credentials
+from twisted.internet import defer
+
+class ZopeSimpleAuthenticatation(object):
+
+    implements(checkers.ICredentialsChecker)
+
+    credentialInterfaces = credentials.IUsernamePassword
+
+    def requestAvatarId(self, credentials):
+        """
+        see zope.server.ftp.publisher.PublisherFileSystemAccess
+
+        We can't actually do any authentication initially, as the
+        user may not be defined at the root.
+        """
+        # -> the user = username, password so we can authenticate later on.
+        return defer.succeed(credentials)
+
+
+class FTPRequestFactory(object):
+    """FTP Request factory
+
+    FTP request factories for a given database create FTP requets with
+    publications on the given database:
+        
+      >>> from ZODB.tests.util import DB
+      >>> db = DB()
+      >>> factory = FTPRequestFactory(db)
+      >>> from cStringIO import StringIO
+      >>> request = factory(StringIO(''), StringIO(),
+      ...                   {'credentials': None, 'path': '/'})
+      >>> request.publication.db is db
+      True
+      >>> db.close()
+
+    """
+    implements(IPublicationRequestFactory)
+
+    def __init__(self, db):
+        self.publication = FTPPublication(db)
+
+    def __call__(self, input_stream, output_steam, env):
+        request = FTPRequest(input_stream, output_steam, env)
+        request.setPublication(self.publication)
+        return request
+
 
 class NoOutput(object):
     """An output stream lookalike that warns you if you try to

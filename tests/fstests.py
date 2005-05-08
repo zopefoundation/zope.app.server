@@ -17,7 +17,7 @@ $Id: fstests.py 26559 2004-07-15 21:22:32Z srichter $
 """
 from StringIO import StringIO
 from zope.interface.verify import verifyObject
-from zope.app.server.ftp.interfaces import IFileSystem
+from zope.app.server.interfaces import IFileSystem
 
 class FileSystemTests(object):
     """Tests of a readable filesystem

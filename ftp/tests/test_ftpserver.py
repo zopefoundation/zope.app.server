@@ -26,8 +26,8 @@ from zope.testing import doctest
 
 from zope.app.server.ftp.server import FTPFactory
 
-from test_publisher import RequestFactory
-import demofs
+from zope.app.server.tests.test_publisher import RequestFactory
+from zope.app.server.tests import demofs
 
 class TestServerSetup(TestCase):
 

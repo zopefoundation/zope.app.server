@@ -121,7 +121,7 @@ def setup(options):
 
     rootService = ZopeService()
 
-    for server in options.servers + options.sslservers:
+    for server in options.servers + options.sslservers + options.sshservers:
         service = server.create(db)
         service.setServiceParent(rootService)
 

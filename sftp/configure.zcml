@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <utility
+     name="SFTP"
+     component=".sftpserver"
+     provides="..interfaces.IServerType"
+     />
+
+  <adapter
+     factory=".sftp.SFTPServerForZope"
+     for=".server.ZopeAvatar"
+     provides="twisted.conch.ssh.filetransfer.ISFTPServer"
+     />
+
+</configure>

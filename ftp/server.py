@@ -17,47 +17,75 @@ __docformat__="restructuredtext"
 
 from zope.interface import implements
 
-from twisted.cred import portal, checkers, credentials
+from twisted.cred import portal, credentials
 from twisted.protocols import ftp, policies
 from twisted.internet import reactor, defer
 
-from zope.publisher.ftp import FTPRequest
-
 from zope.app.server.server import ServerType
-from zope.app.publication.ftp import FTPPublication
-from zope.app.publication.interfaces import IPublicationRequestFactory
 
-from ftp import ZopeFTPShell
-
-class ZopeSimpleAuthenticatation(object):
-    implements(checkers.ICredentialsChecker)
-
-    credentialInterfaces = credentials.IUsernamePassword
-
-    def requestAvatarId(self, credentials):
-        """
-        see zope.server.ftp.publisher.PublisherFileSystemAccess
-
-        We can't actually do any authentication initially, as the
-        user may not be defined at the root.
-        """
-        # -> the user = username, password so we can authenticate later on.
-        return defer.succeed(credentials)
+from zope.app.server.utils import PublisherFileSystem, \
+     ZopeSimpleAuthenticatation
+from zope.app.server.ftp.ftp import ZopeFTPShell
 
 class FTPRealm(object):
+
+    implements(portal.IRealm)
 
     def __init__(self, request_factory, logout = None):
         self.request_factory = request_factory
         self.logout = logout
 
     def requestAvatar(self, avatarId, mind, *interfaces):
+        """
+          >>> from ZODB.tests.util import DB
+          >>> from zope.app.server.utils import FTPRequestFactory
+          >>> creds = credentials.UsernamePassword('bob', '123')
+          >>> db = DB()
+          >>> request_factory = FTPRequestFactory(db)
+          >>> realm = FTPRealm(request_factory)
+          >>> print realm.request_factory is request_factory
+          True
+
+        Now test this method
+
+          >>> result = realm.requestAvatar(creds, None, ftp.IFTPShell)
+          >>> print result[0] is ftp.IFTPShell
+          True
+          >>> print isinstance(result[1], ZopeFTPShell)
+          True
+
+        ZopeFTPShell should contain a PublisherFileSystem istance assigned to
+        its fs_access attribute.
+          
+          >>> from zope.app.server.utils import PublisherFileSystem
+          >>> print isinstance(result[1].fs_access, PublisherFileSystem)
+          True
+
+        Make sure the PublisherFileSystems credentials are correct.
+          
+          >>> print result[1].fs_access.credentials[0] == 'bob'
+          True
+          >>> print result[1].fs_access.credentials[1] == '123'
+          True
+
+        This method only supports the ftp.IFTPShell has the interface for
+        the avatar.
+
+          >>> from zope.interface import Interface
+          >>> realm.requestAvatar(creds, None, Interface)
+          Traceback (most recent call last):
+          ...
+          NotImplementedError: Only IFTPShell interface is supported by this realm.
+          >>> db.close()
+
+        """
         if ftp.IFTPShell in interfaces:
             avatar = ZopeFTPShell(avatarId.username, avatarId.password,
                                   self.request_factory)
             avatar.logout = self.logout
             return ftp.IFTPShell, avatar, avatar.logout
         raise NotImplementedError, \
-                  "Only IFTPShell interface is supported by this realm"
+                  "Only IFTPShell interface is supported by this realm."
 
 class FTPFactory(policies.LimitTotalConnectionsFactory):
     protocol = ftp.FTP
@@ -66,6 +94,30 @@ class FTPFactory(policies.LimitTotalConnectionsFactory):
     timeOut = 600
 
     def __init__(self, request_factory):
+        """
+        The portal performs a simple authentication
+
+          >>> from ZODB.tests.util import DB
+          >>> from zope.app.server.utils import FTPRequestFactory
+          >>> db = DB()
+          >>> request_factory = FTPRequestFactory(db)
+          >>> ftpfactory = FTPFactory(request_factory)
+          >>> print ftpfactory.portal.realm.request_factory is request_factory
+          True
+
+        So the portal initializes ok.
+
+          >>> portal = ftpfactory.portal
+          >>> creds = credentials.UsernamePassword('bob', '123')
+          >>> deferred = portal.login(creds, None, ftp.IFTPShell)
+          >>> result = deferred.result
+          >>> print type(result)
+          <type 'tuple'>
+          >>> db.close()
+
+        The result variable should be the return value of the 'requestAvatar'
+        method of the FTPRealm method. This method contains its own test.
+        """
         r = FTPRealm(request_factory)
         p = portal.Portal(r)
         p.registerChecker(ZopeSimpleAuthenticatation(),
@@ -87,30 +139,3 @@ class FTPFactory(policies.LimitTotalConnectionsFactory):
         # to avoid reactor complaints
         [p.setTimeout(None) for p in self.instances if p.timeOut is not None]
         policies.LimitTotalConnectionsFactory.stopFactory(self)
-
-class FTPRequestFactory(object):
-    """FTP Request factory
-
-    FTP request factories for a given database create FTP requets with
-    publications on the given database:
-        
-      >>> from ZODB.tests.util import DB
-      >>> db = DB()
-      >>> factory = FTPRequestFactory(db)
-      >>> from cStringIO import StringIO
-      >>> request = factory(StringIO(''), StringIO(),
-      ...                   {'credentials': None, 'path': '/'})
-      >>> request.publication.db is db
-      True
-      >>> db.close()
-
-    """
-    implements(IPublicationRequestFactory)
-
-    def __init__(self, db):
-        self.publication = FTPPublication(db)
-
-    def __call__(self, input_stream, output_steam, env):
-        request = FTPRequest(input_stream, output_steam, env)
-        request.setPublication(self.publication)
-        return request

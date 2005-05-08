@@ -24,8 +24,10 @@
 
   <utility
       name="FTP"
-      component=".ftp.server"
+      component=".ftp.ftpserver"
       provides=".interfaces.IServerType"
       />
+
+  <include package=".sftp" />
 
 </configure>

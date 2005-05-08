@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2001,2002,2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""FTP server factories.
+""" SFTP Server Factories.
 """
-
 from zope.app.server.utils import FTPRequestFactory
-from zope.app.server.server import ServerType
-from zope.app.server.ftp.server import FTPFactory
+HAS_CRYPTO = True
+try:
+    from zope.app.server.server import SSHServerType
+    from server import SFTPFactory
+except ImportError, e:
+    HAS_CRYPTO = False
 
-def createFTPFactory(db):
+def createSFTPFactory(db, hostkey):
+    """
+    note that all SSH factories must contain the extra hostkey arguement.
+    """
     request_factory = FTPRequestFactory(db)
 
-    factory = FTPFactory(request_factory)
+    factory = SFTPFactory(request_factory, hostkey = hostkey)
 
     return factory
 
-ftpserver = ServerType(createFTPFactory, 8021)
+if HAS_CRYPTO is True:
+    sftpserver = SSHServerType(createSFTPFactory, 8115)
+else:
+    sftpserver = False
