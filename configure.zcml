@@ -22,12 +22,6 @@
       provides=".interfaces.IServerType"
       />
 
-  <utility
-      name="FTP"
-      component=".ftp.ftpserver"
-      provides=".interfaces.IServerType"
-      />
-
-  <include package=".sftp" />
+  <include package=".ftp" />
 
 </configure>

@@ -6,9 +6,14 @@
      provides="..interfaces.IServerType"
      />
 
+  <utility
+     name="FTP"
+     component=".ftpserver"
+     provides="..interfaces.IServerType"/>
+
   <adapter
      factory=".sftp.SFTPServerForZope"
-     for=".server.ZopeAvatar"
+     for=".sftpserver.ZopeAvatar"
      provides="twisted.conch.ssh.filetransfer.ISFTPServer"
      />
 

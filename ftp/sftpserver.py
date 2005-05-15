@@ -33,9 +33,12 @@ try:
     from twisted.conch.ssh.keys import getPublicKeyString, \
          getPrivateKeyObject, objectType
 except ImportError, e:
-    SSHFactory = object
+    SSHFactory = object # so we can create the SFTPFactory
+    class SSHFactory(object):
+        def doStart(self):
+            raise ImportError, \
+                  "Please install pycrypto to run the SFTP server."
     SSHUserAuthServer = None
-    getPublicKeyString = getPrivateKeyObject = objectType = None
 from twisted.conch.avatar import ConchUser
 from twisted.conch.interfaces import IConchUser
 
@@ -164,8 +167,8 @@ class SFTPFactory(SSHFactory):
           <type 'tuple'>
           >>> db.close()
 
-        The result variable should be the return value of the 'requestAvatar' method
-        of the SFTPRealm method. This method contains its own test.
+        The result variable should be the return value of the 'requestAvatar'
+        method of the SFTPRealm method. This method contains its own test.
         """
         self.hostkey = hostkey
         
