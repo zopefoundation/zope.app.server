@@ -15,7 +15,7 @@
 
   <sectiontype name="server" datatype="zope.app.server.server.ServerFactory">
     <key name="type" required="yes" />
-    <key name="address" datatype="inet-address" />
+    <key name="address" datatype="inet-binding-address" />
     <key name="verbose" datatype="boolean" />
   </sectiontype>
 
