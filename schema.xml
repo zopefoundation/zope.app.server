@@ -19,12 +19,21 @@
     <key name="verbose" datatype="boolean" />
   </sectiontype>
 
-  <section type="ZODB.database" name="*" required="yes"
-           attribute="database">
+  <multisection type="ZODB.database" name="*" required="yes"
+           attribute="databases">
     <description>
-      The main application database that should be used.
+
+      Application database.
+
+      At least one database must be specified.  The first will be used
+      as the main database.  At most one of the databases can be unnamed.
+
+      All of the databases specified will be part of a multi-database.
+      See the ZODB documentation of multi-databases for details of how
+      this is useful.
+
     </description>
-  </section>
+  </multisection>
 
   <section type="eventlog" attribute="eventlog" name="*" required="yes">
     <description>

@@ -61,12 +61,64 @@ def main(args=None):
     sys.exit(0)
 
 
+def multi_database(database_factories):
+    """Set up a multi-database from an iterable of database factories
+
+    Return a sequence of databases, and a mapping of from database name to
+    database.
+
+    >>> class DB:
+    ...     def __init__(self, number):
+    ...         self.number = number
+    ...     def __repr__(self):
+    ...         return "DB(%s)" % self.number
+
+    >>> class Factory:
+    ...     def __init__(self, name, number):
+    ...         self.name = name
+    ...         self.number = number
+    ...     def open(self):
+    ...         return DB(self.number)
+
+    >>> s, m = multi_database(
+    ...           [Factory(None, 3), Factory('y', 2), Factory('x', 1)])
+
+    >>> list(s)
+    [DB(3), DB(2), DB(1)]
+
+    >>> [d.database_name for d in s]
+    ['', 'y', 'x']
+
+    >>> [d.databases is m for d in s]
+    [True, True, True]
+
+    >>> m = m.items()
+    >>> m.sort()
+    >>> m
+    [('', DB(3)), ('x', DB(1)), ('y', DB(2))]
+    """
+
+    databases = {}
+    result = []
+    for factory in database_factories:
+        name = factory.name or ''
+        if name in databases:
+            raise ValueError("Duplicate database name: %r" % name)
+        db = factory.open()
+        db.databases = databases
+        db.database_name = name
+        databases[name] = db
+        result.append(db)
+
+    return result, databases
+        
+
 def debug(args=None):
     options = load_options(args)
 
     zope.app.appsetup.config(options.site_definition)
 
-    db = options.database.open()
+    db = multi_database(options.databases)[0][0]
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
     return db
 
@@ -100,7 +152,7 @@ def setup(options):
 
     zope.app.appsetup.config(options.site_definition)
 
-    db = options.database.open()
+    db = multi_database(options.databases)[0][0]
 
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
 

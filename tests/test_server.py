@@ -85,7 +85,10 @@ def doctest_ServerFactory():
 
 
 def test_suite():
-    return doctest.DocTestSuite()
+    return unittest.TestSuite((
+        doctest.DocTestSuite(),
+        doctest.DocTestSuite('zope.app.server.main'),
+        ))
 
 
 if __name__ == '__main__':
