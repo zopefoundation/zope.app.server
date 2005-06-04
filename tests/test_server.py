@@ -19,7 +19,7 @@ import unittest
 
 from zope.interface.verify import verifyObject
 from zope.testing import doctest
-from zope.app.testing import ztapi, setup
+from zope.app.testing import ztapi, setup, placelesssetup
 
 
 def doctest_ServerFactory():
@@ -87,7 +87,9 @@ def doctest_ServerFactory():
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        doctest.DocTestSuite('zope.app.server.main'),
+        doctest.DocTestSuite(
+            'zope.app.server.main',
+            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
         ))
 
 

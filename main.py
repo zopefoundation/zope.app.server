@@ -22,7 +22,11 @@ import time
 
 from zdaemon import zdoptions
 
+import ZODB.interfaces
+
 import ThreadedAsync
+
+from zope import component, interface
 
 import zope.app.appsetup
 import zope.app.appsetup.interfaces
@@ -92,10 +96,17 @@ def multi_database(database_factories):
     >>> [d.databases is m for d in s]
     [True, True, True]
 
-    >>> m = m.items()
-    >>> m.sort()
-    >>> m
+    >>> items = m.items()
+    >>> items.sort()
+    >>> items
     [('', DB(3)), ('x', DB(1)), ('y', DB(2))]
+
+    Each of the databases is registered as an IDatabase utility:
+
+    >>> [(component.getUtility(ZODB.interfaces.IDatabase, name) is m[name])
+    ...  for name in m]
+    [True, True, True]
+    
     """
 
     databases = {}
@@ -108,6 +119,11 @@ def multi_database(database_factories):
         db.databases = databases
         db.database_name = name
         databases[name] = db
+        # Grrr bug in ZODB. Database doesn't declare that it implements
+        # IDatabase.
+        if not ZODB.interfaces.IDatabase.providedBy(db):
+            interface.directlyProvides(db, ZODB.interfaces.IDatabase)
+        component.provideUtility(db, ZODB.interfaces.IDatabase, name)
         result.append(db)
 
     return result, databases
