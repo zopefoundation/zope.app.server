@@ -14,10 +14,11 @@
 """FTP and SFTP server factories.
 """
 
-from zope.app.server.utils import FTPRequestFactory
 from zope.app.server.server import ServerType
 from zope.app.server.ftp.server import FTPFactory
 from zope.app.server.server import SSHServerType
+
+from utils import FTPRequestFactory
 from sftpserver import SFTPFactory
 
 def createFTPFactory(db):

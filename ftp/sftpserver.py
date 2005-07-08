@@ -15,8 +15,6 @@
 """
 from zope.interface import implements
 
-from zope.app.server.utils import ZopeSimpleAuthenticatation
-from zope.app.server.utils import PublisherFileSystem
 from zope.app.server.interfaces import IFileSystem
 
 from twisted.cred.portal import IRealm, Portal
@@ -42,6 +40,7 @@ except ImportError, e:
 from twisted.conch.avatar import ConchUser
 from twisted.conch.interfaces import IConchUser
 
+from utils import PublisherFileSystem, ZopeSimpleAuthenticatation
 
 class ZopeAvatar(ConchUser):
     implements(IConchUser)
@@ -68,7 +67,7 @@ class SFTPRealm(object):
 
     def requestAvatar(self, avatarId, mind, *interfaces):
         """
-          >>> from zope.app.server.utils import FTPRequestFactory
+          >>> from utils import FTPRequestFactory
           >>> from ZODB.tests.util import DB
           >>> from twisted.cred import credentials
           >>> creds = credentials.UsernamePassword('bob', '123')
@@ -89,7 +88,7 @@ class SFTPRealm(object):
         ZopeAvatar should contain a PublisherFileSystem instance assigned to
         its fs_access attribute.
           
-          >>> from zope.app.server.utils import PublisherFileSystem
+          >>> from utils import PublisherFileSystem
           >>> print isinstance(result[1].fs_access, PublisherFileSystem)
           True
 
@@ -149,7 +148,7 @@ class SFTPFactory(SSHFactory):
         The portal performs a simple authentication
 
           >>> from ZODB.tests.util import DB
-          >>> from zope.app.server.utils import FTPRequestFactory
+          >>> from utils import FTPRequestFactory
           >>> db = DB()
           >>> request_factory = FTPRequestFactory(db)
           >>> sftpfactory = SFTPFactory(request_factory, hostkey = None)

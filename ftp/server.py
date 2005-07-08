@@ -18,27 +18,22 @@ __docformat__="restructuredtext"
 from zope.interface import implements
 
 from twisted.cred import portal, credentials
-from twisted.protocols import ftp, policies
-from twisted.internet import reactor, defer
+from twisted.protocols import ftp
 
-from zope.app.server.server import ServerType
-
-from zope.app.server.utils import PublisherFileSystem, \
-     ZopeSimpleAuthenticatation
-from zope.app.server.ftp.ftp import ZopeFTPShell
+from utils import ZopeSimpleAuthenticatation
+from ftp import ZopeFTPShell
 
 class FTPRealm(object):
 
     implements(portal.IRealm)
 
-    def __init__(self, request_factory, logout = None):
+    def __init__(self, request_factory):
         self.request_factory = request_factory
-        self.logout = logout
 
     def requestAvatar(self, avatarId, mind, *interfaces):
         """
           >>> from ZODB.tests.util import DB
-          >>> from zope.app.server.utils import FTPRequestFactory
+          >>> from utils import FTPRequestFactory
           >>> creds = credentials.UsernamePassword('bob', '123')
           >>> db = DB()
           >>> request_factory = FTPRequestFactory(db)
@@ -57,7 +52,7 @@ class FTPRealm(object):
         ZopeFTPShell should contain a PublisherFileSystem istance assigned to
         its fs_access attribute.
           
-          >>> from zope.app.server.utils import PublisherFileSystem
+          >>> from utils import PublisherFileSystem
           >>> print isinstance(result[1].fs_access, PublisherFileSystem)
           True
 
@@ -82,15 +77,13 @@ class FTPRealm(object):
         if ftp.IFTPShell in interfaces:
             avatar = ZopeFTPShell(avatarId.username, avatarId.password,
                                   self.request_factory)
-            avatar.logout = self.logout
-            return ftp.IFTPShell, avatar, avatar.logout
+            return ftp.IFTPShell, avatar, lambda : None
         raise NotImplementedError, \
                   "Only IFTPShell interface is supported by this realm."
 
-class FTPFactory(policies.LimitTotalConnectionsFactory):
-    protocol = ftp.FTP
-    overflowProtocol = ftp.FTPOverflowProtocol
+class FTPFactory(ftp.FTPFactory):
     allowAnonymous = False
+
     timeOut = 600
 
     def __init__(self, request_factory):
@@ -98,7 +91,7 @@ class FTPFactory(policies.LimitTotalConnectionsFactory):
         The portal performs a simple authentication
 
           >>> from ZODB.tests.util import DB
-          >>> from zope.app.server.utils import FTPRequestFactory
+          >>> from utils import FTPRequestFactory
           >>> db = DB()
           >>> request_factory = FTPRequestFactory(db)
           >>> ftpfactory = FTPFactory(request_factory)
@@ -122,20 +115,4 @@ class FTPFactory(policies.LimitTotalConnectionsFactory):
         p = portal.Portal(r)
         p.registerChecker(ZopeSimpleAuthenticatation(),
                           credentials.IUsernamePassword)
-
-        self.portal = p
-        self.instances = []
-
-    def buildProtocol(self, addr):
-        p = policies.LimitTotalConnectionsFactory.buildProtocol(self, addr)
-        if p is not None:
-            p.wrappedProtocol.portal = self.portal
-            p.wrappedProtocol.timeOut = self.timeOut
-        self.instances.append(p.wrappedProtocol)
-        return p
-
-    def stopFactory(self):
-        # make sure ftp instance's timeouts are set to None
-        # to avoid reactor complaints
-        [p.setTimeout(None) for p in self.instances if p.timeOut is not None]
-        policies.LimitTotalConnectionsFactory.stopFactory(self)
+        ftp.FTPFactory.__init__(self, p)

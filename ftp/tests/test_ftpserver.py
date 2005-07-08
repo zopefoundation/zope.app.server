@@ -62,6 +62,11 @@ class TestServerSetup(TestCase):
 
         del self.serverProtocol
 
+        ## for some reason the threadpool isn't cleaning up.
+        from twisted.internet import reactor
+        if getattr(reactor, 'threadpool', None):
+            reactor.threadpool.stop()
+
     def test_serverUp(self):
         # test if we can bring the server up and down.
         pass
@@ -77,13 +82,15 @@ class TestServerSetup(TestCase):
     def test_MLD(self):
         self._authLogin()
         responseLines = wait(self.client.queueStringCommand('MKD /newdir'))
-        self.assertEqual(['257 "/newdir" created.'], responseLines)
+        self.assertEqual(['257 "/newdir" created'], responseLines)
 
 
 def test_suite():
     return TestSuite((
         makeSuite(TestServerSetup),
         doctest.DocTestSuite('zope.app.server.ftp.server'),
+        doctest.DocTestSuite('zope.app.server.ftp.utils'),
+        doctest.DocTestSuite('zope.app.server.ftp.sftpserver'),
         ))
 
 if __name__=='__main__':

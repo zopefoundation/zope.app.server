@@ -27,7 +27,7 @@ from zope.publisher.ftp import FTPRequest
 from zope.app.publication.interfaces import IPublicationRequestFactory
 from zope.app.publication.ftp import FTPPublication
 
-from interfaces import IFileSystem
+from zope.app.server.interfaces import IFileSystem
 
 from twisted.cred import checkers, credentials
 from twisted.internet import defer
