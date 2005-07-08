@@ -17,8 +17,11 @@ $Id$
 """
 import twisted.web2.wsgi
 import twisted.web2.server
-import twisted.web2.http
 import twisted.web2.log
+try:
+    from twisted.web2.http import HTTPFactory
+except ImportError:
+    from twisted.web2.channel.http import HTTPFactory
 
 from zope.app.server.server import ServerType, SSLServerType
 from zope.app import wsgi
@@ -29,7 +32,7 @@ def createHTTPFactory(db):
         wsgi.WSGIPublisherApplication(db))
     resource = twisted.web2.log.LogWrapperResource(resource)
     
-    return twisted.web2.http.HTTPFactory(twisted.web2.server.Site(resource))
+    return HTTPFactory(twisted.web2.server.Site(resource))
 
 
 http = ServerType(createHTTPFactory, 8080)
@@ -42,8 +45,6 @@ def createPMHTTPFactory(db):
         wsgi.PMDBWSGIPublisherApplication(db))
     resource = twisted.web2.log.LogWrapperResource(resource)
     
-    return twisted.web2.http.HTTPFactory(twisted.web2.server.Site(resource))
+    return HTTPFactory(twisted.web2.server.Site(resource))
 
 pmhttp = ServerType(createPMHTTPFactory, 8080)
-
-
