@@ -72,3 +72,6 @@ class TestAccessLogging(test_logger.LoggingTestBase):
 
 def test_suite():
     return unittest.makeSuite(TestAccessLogging)
+
+if __name__ == '__main__':
+    unittest.main()
