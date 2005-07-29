@@ -165,7 +165,7 @@ class Application(object):
 
     def copy_skeleton(self):
         options = self.options
-        # XXX we should be able to compute the script
+        # TODO we should be able to compute the script
         script = os.path.abspath(sys.argv[0])
         zope_home = os.path.dirname(os.path.dirname(script))
         zope_init = os.path.abspath(zope.__file__)
