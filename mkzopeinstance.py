@@ -112,12 +112,6 @@ class Application(object):
                 os.path.dirname(os.path.realpath(__main__.__file__)))
             shutil.copy2(os.path.join(swhome, "securitypolicy.zcml"),
                          os.path.join(options.destination, "etc"))
-            piname = "package-includes"
-            pisrc = os.path.join(swhome, piname)
-            pidst = os.path.join(options.destination, "etc", piname)
-            for fn in os.listdir(pisrc):
-                if fn.endswith(".zcml"):
-                    shutil.copy2(os.path.join(pisrc, fn), pidst)
         return 0
 
     def get_skeltarget(self):
