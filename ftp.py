@@ -28,13 +28,12 @@ class FTPRequestFactory(object):
 
     FTP request factories for a given database create FTP requets with
     publications on the given database:
-        
+
       >>> from ZODB.tests.util import DB
       >>> db = DB()
       >>> factory = FTPRequestFactory(db)
       >>> from cStringIO import StringIO
-      >>> request = factory(StringIO(''), StringIO(),
-      ...                   {'credentials': None, 'path': '/'})
+      >>> request = factory(StringIO(''), {'credentials': None, 'path': '/'})
       >>> request.publication.db is db
       True
       >>> db.close()
@@ -45,8 +44,8 @@ class FTPRequestFactory(object):
     def __init__(self, db):
         self.publication = FTPPublication(db)
 
-    def __call__(self, input_stream, output_steam, env):
-        request = FTPRequest(input_stream, output_steam, env)
+    def __call__(self, input_stream, env):
+        request = FTPRequest(input_stream, env)
         request.setPublication(self.publication)
         return request
 

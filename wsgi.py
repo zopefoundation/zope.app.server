@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 from zope.server.http.commonaccesslogger import CommonAccessLogger
-from zope.server.http.wsgihttpserver import WSGIHTTPServer
+from zope.server.http import wsgihttpserver
 
 from zope.app.wsgi import WSGIPublisherApplication
 
@@ -61,7 +61,12 @@ class ServerType(object):
                       )
 
 
-http = ServerType(WSGIHTTPServer,
+http = ServerType(wsgihttpserver.WSGIHTTPServer,
                   WSGIPublisherApplication,
                   CommonAccessLogger,
                   8080, True)
+
+pmhttp = ServerType(wsgihttpserver.PMDBWSGIHTTPServer,
+                    WSGIPublisherApplication,
+                    CommonAccessLogger,
+                    8013, True)
