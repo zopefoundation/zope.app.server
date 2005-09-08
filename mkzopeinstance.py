@@ -186,7 +186,8 @@ class Application(object):
             srcname = os.path.join(src, name)
             dstname = os.path.join(dst, name)
             if os.path.isdir(srcname):
-                os.mkdir(dstname)
+                if not os.path.exists(dstname):
+                    os.mkdir(dstname)
                 self.copytree(srcname, dstname)
             else:
                 self.copyfile(srcname, dstname)

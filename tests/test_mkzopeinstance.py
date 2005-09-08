@@ -259,6 +259,31 @@ class InputCollectionTestCase(TestBase):
         self.failUnless(self.stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
+    def test_can_rewrite_existing_instance(self):
+        # Fill out the skeleton a little so we test more cases:
+        os.mkdir(os.path.join(self.skeleton, "etc"))
+        f = open(os.path.join(self.skeleton, "etc", "README.txt"), "w")
+        f.write("Configuration goes here.\n")
+        f.close()
+
+        # Create an instance home:
+        options = self.createOptions()
+        options.destination = self.instance
+        app = ControlledInputApplication(options, [])
+        rc = app.process()
+        self.assertEqual(rc, 0)
+        self.failUnless(app.all_input_consumed())
+        self.failUnless(os.path.exists(os.path.join(self.instance, "etc")))
+
+        # Make sure we can do it again:
+        options = self.createOptions()
+        options.destination = self.instance
+        app = ControlledInputApplication(options, [])
+        rc = app.process()
+        self.assertEqual(rc, 0)
+        self.failUnless(app.all_input_consumed())
+        self.failUnless(os.path.exists(os.path.join(self.instance, "etc")))
+
 
 class ControlledInputApplication(mkzopeinstance.Application):
 
