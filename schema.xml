@@ -1,6 +1,4 @@
 <schema extends="../appsetup/schema.xml">
-  <!-- Zope 3 Application Server Configuration Schema -->
-  <import package="zope.app.appsetup" file="app.xml" />
 
   <!-- logging configuration -->
   <import package="zope.app.server" file="accesslog.xml" />
