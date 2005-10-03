@@ -21,6 +21,7 @@ import zope.interface
 from zope.server.http.commonaccesslogger import CommonAccessLogger
 from zope.server.http import wsgihttpserver
 
+from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.wsgi import WSGIPublisherApplication
 
 import servertype
@@ -30,9 +31,11 @@ class ServerType(object):
     zope.interface.implements(servertype.IServerType)
 
     def __init__(self, factory, applicationFactory, logFactory,
-                 defaultPort, defaultVerbose, defaultIP=''):
+                 defaultPort, defaultVerbose, defaultIP='',
+                 requestFactory=HTTPPublicationRequestFactory):
         self._factory = factory
         self._applicationFactory = applicationFactory
+        self._requestFactory = requestFactory
         self._logFactory = logFactory
         self._defaultPort = defaultPort
         self._defaultVerbose = defaultVerbose
@@ -43,7 +46,7 @@ class ServerType(object):
                verbose=None, ip=None):
         'See IServerType'
 
-        application = self._applicationFactory(db)
+        application = self._applicationFactory(db, factory=self._requestFactory)
 
         if port is None:
             port = self._defaultPort
