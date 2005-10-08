@@ -87,9 +87,6 @@ def doctest_ServerFactory():
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        doctest.DocTestSuite(
-            'zope.app.server.main',
-            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown),
         ))
 
 

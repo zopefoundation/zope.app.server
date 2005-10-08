@@ -1,4 +1,7 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    zcml:condition="have zserver">
 
   <utility
       component=".servercontrol.serverControl"
