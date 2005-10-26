@@ -170,14 +170,17 @@ class Application(object):
         self.need_blank_line = True
         while 1:
             password_manager = self.read_input_line(
-                "Password Manager Number: ")
-            if (not password_manager
-                    or not password_manager.isdigit()
-                    or int(password_manager) - 1 >= len(password.managers)):
-                print >>sys.stderr, "You must select a password manager"
-                continue
-            break
-        index = int(password_manager) - 1
+                "Password Manager Number [1]: ")
+            if not password_manager:
+                index = 0
+                break
+            elif password_manager.isdigit():
+                index = int(password_manager)
+                if index > 0 and index <= len(password.managers):
+                    index -= 1
+                    break
+            print >>sys.stderr, "You must select a password manager"
+        print "%r password manager selected" % password.managers[index][0] 
         return password.managers[index]
 
     def print_message(self, message):
