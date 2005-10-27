@@ -253,6 +253,8 @@ def get_password_managers(config_path=None):
                 managers.insert(0, (name, manager))
             else:
                 managers.append((name, manager))
+        if not managers:
+            from zope.app.authentication.password import managers
     return managers
 
 def parse_args(argv):
