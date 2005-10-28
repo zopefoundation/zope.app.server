@@ -128,6 +128,18 @@ class ArgumentParsingTestCase(TestBase):
         self.assertEqual(options.username, "User")
         self.assertEqual(options.password, "Pass")
 
+    def test_without_password_manager(self):
+        options = self.parse_args([])
+        self.assertEqual(options.password_manager, None)
+
+    def test_password_manager_short(self):
+        options = self.parse_args(["-m", "Manager"])
+        self.assertEqual(options.password_manager, "Manager")
+
+    def test_password_manager_long(self):
+        options = self.parse_args(["--password-manager", "Manager"])
+        self.assertEqual(options.password_manager, "Manager")
+
     def test_junk_positional_arg(self):
         try:
             self.parse_args(["junk"])
@@ -214,6 +226,32 @@ class InputCollectionTestCase(TestBase):
         self.assertEqual(usr, "myuser")
         self.failUnless(self.stderr.getvalue())
         self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_password_manager(self):
+        options = self.createOptions()
+        options.password_manager = None
+        app = ControlledInputApplication(options, ["3"])
+        name, pwm = app.get_password_manager()
+        self.assertEqual(name, "SHA1")
+        self.assertEqual(pwm.encodePassword("foo"),
+            "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
+        self.failIf(self.stderr.getvalue())
+        self.failUnless(self.stdout.getvalue())
+        self.failUnless(app.all_input_consumed())
+
+    def test_get_wrong_password_manager(self):
+        options = self.createOptions()
+        options.password_manager = "Unknown"
+        app = ControlledInputApplication(options, [])
+        try:
+            app.get_password_manager()
+        except SystemExit, e:
+            self.assertEqual(e.code, 1)
+        else:
+            self.fail("expected SystemExit")
+        self.failUnless(self.stderr.getvalue())
+        self.failIf(self.stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_password(self):
@@ -303,6 +341,7 @@ class ControlledInputApplication(mkzopeinstance.Application):
 class Options(object):
 
     username = "[test-username]"
+    password_manager = "Plain Text"
     password = "[test-password]"
     destination = None
     version = "[test-version]"

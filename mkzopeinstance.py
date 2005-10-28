@@ -29,6 +29,7 @@ import sys
 
 import zope
 
+from zope.app.authentication import password
 from zope.app.applicationcontrol import zopeversion
 
 
@@ -100,8 +101,11 @@ class Application(object):
 
         if not options.username:
             options.username = self.get_username()
+        (options.password_manager,
+            password_manager) = self.get_password_manager()
         if not options.password:
             options.password = self.get_password()
+        options.password = password_manager.encodePassword(options.password)
 
         # now create the instance!
         self.copy_skeleton()
@@ -151,6 +155,34 @@ class Application(object):
             sys.exit(1)
         return password
 
+    def get_password_manager(self):
+        if self.options.password_manager:
+            for name, manager in password.managers:
+                if name == self.options.password_manager:
+                    return (name, manager)
+            print >>sys.stderr, "Unknown password manager!"
+            sys.exit(1)
+
+        self.print_message(PASSWORD_MANAGER_MESSAGE)
+        for i, (name, manager) in enumerate(password.managers):
+            print "% i. %s" % (i + 1, name)
+        print
+        self.need_blank_line = True
+        while 1:
+            password_manager = self.read_input_line(
+                "Password Manager Number [1]: ")
+            if not password_manager:
+                index = 0
+                break
+            elif password_manager.isdigit():
+                index = int(password_manager)
+                if index > 0 and index <= len(password.managers):
+                    index -= 1
+                    break
+            print >>sys.stderr, "You must select a password manager"
+        print "%r password manager selected" % password.managers[index][0] 
+        return password.managers[index]
+
     def print_message(self, message):
         if self.need_blank_line:
             print
@@ -165,11 +197,12 @@ class Application(object):
         zope_init = os.path.abspath(zope.__file__)
         software_home = os.path.dirname(os.path.dirname(zope_init))
         self.replacements = [
-            ("<<USERNAME>>",      options.username),
-            ("<<PASSWORD>>",      options.password),
-            ("<<PYTHON>>",        sys.executable),
+            ("<<USERNAME>>", options.username),
+            ("<<PASSWORD>>", options.password),
+            ("<<PASSWORD_MANAGER>>", options.password_manager),
+            ("<<PYTHON>>", sys.executable),
             ("<<INSTANCE_HOME>>", options.destination),
-            ("<<ZOPE_HOME>>",     zope_home),
+            ("<<ZOPE_HOME>>", zope_home),
             ("<<SOFTWARE_HOME>>", software_home),
             ]
         self.copytree(self.options.skeleton, self.options.destination)
@@ -224,6 +257,11 @@ PASSWORD_MESSAGE = """\
 Please provide a password for the initial administrator account.
 """
 
+PASSWORD_MANAGER_MESSAGE = """\
+Please select a password manager which will be used for encode the password of
+the initial administrator account.
+"""
+
 
 def parse_args(argv, from_checkout=False):
     """Parse the command line, returning an object representing the input."""
@@ -236,6 +274,10 @@ def parse_args(argv, from_checkout=False):
                  help="the dir in which the instance home should be created")
     p.add_option("-s", "--skelsrc", dest="skeleton", metavar="DIR",
                  help="template skeleton directory")
+    p.add_option("-m", "--password-manager",
+                 dest="password_manager", metavar="NAME",
+                 help=("set the name of the password manager"
+                       " to be used for encode the password"))
     p.add_option("-u", "--user", dest="username", metavar="USER:PASSWORD",
                  help="set the user name and password of the initial user")
     options, args = p.parse_args(argv[1:])
