@@ -61,10 +61,18 @@ class Application(object):
 
     def read_input_line(self, prompt):
         # The tests replace this to make sure the right things happen.
+        if not self.options.interactive:
+            print >>sys.stderr, ('Error: Tried to ask for user input in'
+                                 ' non-interactive mode.')
+            sys.exit(1)
         return raw_input(prompt)
 
     def read_password(self, prompt):
         # The tests replace this to make sure the right things happen.
+        if not self.options.interactive:
+            print >>sys.stderr, ('Error: Tried to ask for user input in'
+                                 ' non-interactive mode.')
+            sys.exit(1)
         import getpass
         try:
             return getpass.getpass(prompt)
@@ -101,10 +109,13 @@ class Application(object):
 
         if not options.username:
             options.username = self.get_username()
+
         (options.password_manager,
             password_manager) = self.get_password_manager()
+
         if not options.password:
             options.password = self.get_password()
+
         options.password = password_manager.encodePassword(options.password)
 
         # now create the instance!
@@ -156,6 +167,9 @@ class Application(object):
         return password
 
     def get_password_manager(self):
+        if not self.options.password_manager and not self.options.interactive:
+            self.options.password_manager = password.managers[0][0]
+
         if self.options.password_manager:
             for name, manager in password.managers:
                 if name == self.options.password_manager:
@@ -280,6 +294,8 @@ def parse_args(argv, from_checkout=False):
                        " to be used for encode the password"))
     p.add_option("-u", "--user", dest="username", metavar="USER:PASSWORD",
                  help="set the user name and password of the initial user")
+    p.add_option("--non-interactive", dest="interactive", action="store_false",
+                 default=True, help="do no interactive prompting")
     options, args = p.parse_args(argv[1:])
     if options.skeleton is None:
         options.add_package_includes = from_checkout

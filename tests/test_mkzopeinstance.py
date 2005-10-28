@@ -165,6 +165,7 @@ class InputCollectionTestCase(TestBase):
     def createOptions(self):
         options = Options()
         options.skeleton = self.skeleton
+        options.interactive = True
         return options
 
     def test_get_skeltarget(self):
