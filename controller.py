@@ -33,6 +33,15 @@ class ZopectlCmd(zdaemon.zdctl.ZDCmd):
         print "debug -- Initialize the Zope application, providing a"
         print "         debugger object at an interactive Python prompt."
 
+    def do_run(self, arg):
+        cmdline = "%s/bin/scriptzope %s" % (INSTANCE_HOME, arg)
+        os.system(cmdline)
+
+    def help_run(self):
+        print "run <script> [args] -- run a Python script with the Zope "
+        print "                       environment set up.  The script has "
+        print "                       'root' exposed as the root container."
+
 
 def main(args=None, options=None, cmdclass=ZopectlCmd):
     zdaemon.zdctl.main(args, options, cmdclass)
