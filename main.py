@@ -98,8 +98,12 @@ def setup(options):
     options.eventlog()
     options.accesslog()
 
-    zope.app.appsetup.config(options.site_definition,
-                             features=('zserver',))
+    features = ('zserver',)
+    # Provide the devmode, if activated
+    if options.devmode:
+        features += ('devmode',)
+
+    zope.app.appsetup.config(options.site_definition, features=features)
 
     db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
 
