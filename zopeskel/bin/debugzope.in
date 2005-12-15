@@ -1,0 +1,50 @@
+#!<<PYTHON>> -i
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Script to run the Zope Application Server from the Python prompt.
+
+$Id$
+"""
+import os
+import sys
+
+
+SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
+INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
+
+
+def startup():
+    # This removes the script directory from sys.path, which we do
+    # since there are no modules here.
+    #
+    basepath = filter(None, sys.path)
+
+    sys.path[:] = [os.path.join(INSTANCE_HOME, "lib", "python"),
+                   SOFTWARE_HOME] + basepath
+
+    from zope.app.server.main import debug
+    db = debug(["-C", CONFIG_FILE] + sys.argv[1:])
+    if "PYTHONSTARTUP" in os.environ:
+        execfile(os.environ["PYTHONSTARTUP"])
+    return db
+
+
+if __name__ == '__main__':
+    db = startup()
+    del startup
+    from zope.app.debug import Debugger
+    debugger = app = Debugger.fromDatabase(db)
+    del db
+    del Debugger
