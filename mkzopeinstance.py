@@ -27,6 +27,8 @@ import os
 import shutil
 import sys
 
+from  xml.sax.saxutils import quoteattr as xml_quoteattr
+
 import zope
 
 from zope.app.authentication import password
@@ -212,7 +214,9 @@ class Application(object):
         software_home = os.path.dirname(os.path.dirname(zope_init))
         self.replacements = [
             ("<<USERNAME>>", options.username),
+            ("<<USERNAME-XMLATTR>>", xml_quoteattr(options.username)),
             ("<<PASSWORD>>", options.password),
+            ("<<PASSWORD-XMLATTR>>", xml_quoteattr(options.password)),
             ("<<PASSWORD_MANAGER>>", options.password_manager),
             ("<<PYTHON>>", sys.executable),
             ("<<INSTANCE_HOME>>", options.destination),
