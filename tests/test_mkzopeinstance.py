@@ -189,7 +189,6 @@ class InputCollectionTestCase(TestBase):
         self.failUnless(app.all_input_consumed())
 
     def test_zserver_support(self):
-
         # test the zserver option.  We should get zserver versions of
         # runzope, zopectl, debugzope and zope.conf.  Any of these
         # that we provide in put skeleton should be overritten.
@@ -203,15 +202,17 @@ class InputCollectionTestCase(TestBase):
         options = self.createOptions()
         options.destination = self.instance
         options.interactive = False
+        options.zserver = True
         app = ControlledInputApplication(options, [])
         self.assertEqual(app.process(), 0)
-
-        self.assert_('from zope.app.server.main import main' in
-                     open(os.path.join(self.instance, 'bin', 'runzope'))
-                     )
-        self.assert_('from zope.app.server.main import debug' in
-                     open(os.path.join(self.instance, 'bin', 'debugzope'))
-                     )
+        self.assert_(
+            'from zope.app.server.main import main' in
+            open(os.path.join(self.instance, 'bin', 'runzope')).read()
+            )
+        self.assert_(
+            'from zope.app.server.main import debug' in
+            open(os.path.join(self.instance, 'bin', 'debugzope')).read()
+            )
         self.assert_(os.path.exists(
             os.path.join(self.instance, 'etc', 'zope.conf')
             ))
@@ -378,6 +379,7 @@ class Options(object):
     version = "[test-version]"
     program = "[test-program]"
     add_package_includes = False
+    zserver = False
 
 
 def test_suite():
