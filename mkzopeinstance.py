@@ -258,14 +258,27 @@ class Application(object):
             # perform replacements
             for var, string in self.replacements:
                 text = text.replace(var, string)
-            f = open(dst, "w")
+
+            # If the file exists, keep the old file.  This is a
+            # hopefully temporary hack to get around distutils
+            # stripping the permissions on the server skeletin files.
+            # We reuse the original default files, which have the
+            # right permissions.
+            old = os.path.exists(dst)
+            if old:
+                f = open(dst, "r+")
+                f.truncate(0)
+            else:
+                f = open(dst, "w")
+
             f.write(text)
             f.close()
-            shutil.copymode(src, dst)
-            shutil.copystat(src, dst)
+
+            if not old:
+                shutil.copymode(src, dst)
+                shutil.copystat(src, dst)
         else:
             shutil.copy2(src, dst)
-
 
 SKELTARGET_MESSAGE = """\
 Please choose a directory in which you'd like to install Zope
