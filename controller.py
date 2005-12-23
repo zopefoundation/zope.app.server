@@ -26,7 +26,7 @@ INSTANCE_HOME = os.path.dirname(
 class ZopectlCmd(zdaemon.zdctl.ZDCmd):
 
     def do_debug(self, rest):
-        cmdline = "%s/bin/debugzope" % INSTANCE_HOME
+        cmdline = os.path.join(INSTANCE_HOME, 'bin', 'debugzope')
         os.system(cmdline)
 
     def help_debug(self):
@@ -34,7 +34,8 @@ class ZopectlCmd(zdaemon.zdctl.ZDCmd):
         print "         debugger object at an interactive Python prompt."
 
     def do_run(self, arg):
-        cmdline = "%s/bin/scriptzope %s" % (INSTANCE_HOME, arg)
+        cmdline = "%s %s" % (
+            os.path.join(INSTANCE_HOME, 'bin', 'scriptzope'), arg)
         os.system(cmdline)
 
     def help_run(self):
