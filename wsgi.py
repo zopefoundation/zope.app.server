@@ -46,7 +46,8 @@ class ServerType(object):
                verbose=None, ip=None):
         'See IServerType'
 
-        application = self._applicationFactory(db, factory=self._requestFactory)
+        application = self._applicationFactory(
+            db, factory=self._requestFactory)
 
         if port is None:
             port = self._defaultPort
