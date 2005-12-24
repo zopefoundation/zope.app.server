@@ -20,6 +20,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import zope.app.server
 
 from StringIO import StringIO
 
@@ -186,6 +187,35 @@ class InputCollectionTestCase(TestBase):
         self.assert_(os.path.isdir(self.instance))
         self.assertEqual(input, [])
         self.failUnless(app.all_input_consumed())
+
+    def test_zserver_support(self):
+
+        # test the zserver option.  We should get zserver versions of
+        # runzope, zopectl, debugzope and zope.conf.  Any of these
+        # that we provide in put skeleton should be overritten.
+
+        # privide a dummy runzope
+        os.mkdir(os.path.join(self.skeleton, 'bin'))
+        f = open(os.path.join(self.skeleton, 'bin', 'runzope.in'), 'w')
+        f.write('runzope')
+        f.close()
+        
+        options = self.createOptions()
+        options.destination = self.instance
+        options.interactive = False
+        app = ControlledInputApplication(options, [])
+        self.assertEqual(app.process(), 0)
+
+        self.assert_('from zope.app.server.main import main' in
+                     open(os.path.join(self.instance, 'bin', 'runzope'))
+                     )
+        self.assert_('from zope.app.server.main import debug' in
+                     open(os.path.join(self.instance, 'bin', 'debugzope'))
+                     )
+        self.assert_(os.path.exists(
+            os.path.join(self.instance, 'etc', 'zope.conf')
+            ))
+
 
     def test_process_aborts_on_file_destination(self):
         options = self.createOptions()

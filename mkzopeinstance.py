@@ -33,7 +33,7 @@ import zope
 
 from zope.app.authentication import password
 from zope.app.applicationcontrol import zopeversion
-
+import zope.app.server
 
 def main(argv=None, from_checkout=False):
     """Top-level script function to create a new Zope instance."""
@@ -224,6 +224,13 @@ class Application(object):
             ("<<SOFTWARE_HOME>>", software_home),
             ]
         self.copytree(self.options.skeleton, self.options.destination)
+        if options.zserver:
+            self.copytree(
+                os.path.join(os.path.dirname(zope.app.server.__file__),
+                             'zopeskel'),
+                self.options.destination,
+                )
+            
 
     def copytree(self, src, dst):
         # Similar to shutil.copytree(), but doesn't care about
@@ -300,6 +307,17 @@ def parse_args(argv, from_checkout=False):
                  help="set the user name and password of the initial user")
     p.add_option("--non-interactive", dest="interactive", action="store_false",
                  default=True, help="do no interactive prompting")
+    p.add_option("--zserver", dest="zserver", action="store_true",
+                 help="""\
+Use the older ZServer network server rather than the default Twisted
+server.  The Twisted integration with Zope is experimental and not
+recommended for use in production sites.  We do encourage it's
+use in development or in sites that can stand a little uncertianty, so
+that we can gain more experience with it.
+""",
+                 )
+
+    
     options, args = p.parse_args(argv[1:])
     if options.skeleton is None:
         options.add_package_includes = from_checkout
