@@ -26,14 +26,11 @@ import optparse
 import os
 import shutil
 import sys
+from xml.sax.saxutils import quoteattr as xml_quoteattr
 
-from  xml.sax.saxutils import quoteattr as xml_quoteattr
-
-import zope
-
+import zope.app.server
 from zope.app.authentication import password
 from zope.app.applicationcontrol import zopeversion
-import zope.app.server
 
 def main(argv=None, from_checkout=False):
     """Top-level script function to create a new Zope instance."""
@@ -210,7 +207,7 @@ class Application(object):
         # TODO we should be able to compute the script
         script = os.path.abspath(sys.argv[0])
         zope_home = os.path.dirname(os.path.dirname(script))
-        zope_init = os.path.abspath(zope.__file__)
+        zope_init = os.path.dirname(os.path.abspath(zope.app.__file__))
         software_home = os.path.dirname(os.path.dirname(zope_init))
         self.replacements = [
             ("<<USERNAME>>", options.username),

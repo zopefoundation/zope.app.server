@@ -354,6 +354,38 @@ class InputCollectionTestCase(TestBase):
         self.failUnless(app.all_input_consumed())
         self.failUnless(os.path.exists(os.path.join(self.instance, "etc")))
 
+    def test_zope_namespace_package_doesnt_affect_software_home(self):
+        # Make sure that a zope namespace package in a different
+        # location won't affect SOFTWARE_HOME
+
+        # let's mess with zope's __file__
+        import zope
+        old_path = zope.__file__
+        zope.__file__ = os.path.join(
+            *'and now for something completely different'.split())
+
+        # place a test file into the skeleton dir that'll be expanded
+        # to SOFTWARE_HOME by mkzopeinstance
+        f = file(os.path.join(self.skeleton, 'test.in'), 'w')
+        f.write('<<SOFTWARE_HOME>>')
+        f.close()
+
+        # run mkzopeinstance
+        options = self.createOptions()
+        options.destination = self.instance
+        app = ControlledInputApplication(options, [])
+        rc = app.process()
+
+        # check for the expected output: mkzopeinstance should take
+        # zope.app as an anchor for determining SOFTWARE_HOME
+        import zope.app
+        expected = os.path.dirname(os.path.dirname(
+            os.path.dirname(zope.app.__file__)))
+        self.assertEqual(file(os.path.join(self.instance, 'test')).read(),
+                         expected)
+
+        # cleanup the fake 'zope' module
+        zope.__file__ = old_path
 
 class ControlledInputApplication(mkzopeinstance.Application):
 
