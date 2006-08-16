@@ -102,6 +102,9 @@ def setup(options):
     # Provide the devmode, if activated
     if options.devmode:
         features += ('devmode',)
+        logging.warning("Developer mode is enabled: this is a security risk "
+            "and should NOT be enabled on production servers. Developer mode "
+            "can be turned off in etc/zope.conf")
 
     zope.app.appsetup.config(options.site_definition, features=features)
 
