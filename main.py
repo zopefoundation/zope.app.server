@@ -97,6 +97,8 @@ def setup(options):
 
     options.eventlog()
     options.accesslog()
+    for logger in options.logger:
+        logger()
 
     features = ('zserver',)
     # Provide the devmode, if activated
