@@ -97,7 +97,7 @@ def setup(options):
 
     options.eventlog()
     options.accesslog()
-    for logger in options.logger:
+    for logger in options.loggers:
         logger()
 
     features = ('zserver',)
