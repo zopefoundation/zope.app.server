@@ -16,7 +16,7 @@ site-definition $INSTANCE/etc/site.zcml
 interrupt-check-interval 200
 
 <server>
-  type HTTP
+  type WSGI-HTTP
   address 8080
 </server>
 
@@ -25,7 +25,7 @@ interrupt-check-interval 200
 # an exception, Zope will drop into pdb at the point of the exception.
 #
 #<server>
-#  type PostmortemDebuggingHTTP
+#  type WSGI-PostmortemDebuggingHTTP
 #  address 8080
 #</server>
 
