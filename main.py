@@ -26,6 +26,7 @@ import ThreadedAsync
 
 import zope.app.appsetup.appsetup
 import zope.app.appsetup.interfaces
+import zope.app.appsetup.product
 from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
@@ -95,6 +96,8 @@ def load_options(args=None):
 def setup(options):
     sys.setcheckinterval(options.check_interval)
 
+    zope.app.appsetup.product.setProductConfigurations(
+        options.product_config)
     options.eventlog()
     options.accesslog()
     for logger in options.loggers:
