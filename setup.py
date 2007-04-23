@@ -42,7 +42,9 @@ setup(name='zope.app.server',
                         'zope.interface',
                         'zope.publisher',
                         'zope.server',
-                        'zdaemon'
+                        'zdaemon',
+                        'ZConfig',
+                        'ThreadedAsync'
                         ],
       include_package_data = True,
       zip_safe = False,
