@@ -266,7 +266,7 @@ class InputCollectionTestCase(TestBase):
         app = ControlledInputApplication(options, ["3"])
         name, pwm = app.get_password_manager()
         self.assertEqual(name, "SHA1")
-        self.assertEqual(pwm.encodePassword("foo"),
+        self.assertEqual(pwm.encodePassword("foo")[-40:],
             "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
         self.failIf(self.stderr.getvalue())
         self.failUnless(self.stdout.getvalue())
