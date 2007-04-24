@@ -65,6 +65,9 @@ def main(args=None):
 def debug(args=None):
     options = load_options(args)
 
+    zope.app.appsetup.product.setProductConfigurations(
+        options.product_config)
+
     zope.app.appsetup.config(options.site_definition)
 
     db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
