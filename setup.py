@@ -44,7 +44,7 @@ setup(name='zope.app.server',
                         'zope.server',
                         'zdaemon',
                         'ZConfig',
-                        'ThreadedAsync'
+                        'ZODB3',
                         ],
       include_package_data = True,
       zip_safe = False,
