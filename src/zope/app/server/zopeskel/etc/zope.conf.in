@@ -1,0 +1,91 @@
+# This is the configuration file for the Zope Application Server.
+
+%define INSTANCE  <<INSTANCE_HOME>>
+
+%define CONFDIR   $INSTANCE/etc
+%define DATADIR   $INSTANCE/var
+%define LOGDIR    $INSTANCE/log
+
+# identify the component configuration used to define the site:
+#
+site-definition $INSTANCE/etc/site.zcml
+
+# number of bytecode instructions to execute between checks for
+# interruptions (SIGINTR, thread switches):
+#
+interrupt-check-interval 200
+
+<server>
+  type WSGI-HTTP
+  address 8080
+</server>
+
+# For debugging purposes, you can use this publisher instead/as well
+# (obviously if it's as well, use a different port number). If there's
+# an exception, Zope will drop into pdb at the point of the exception.
+#
+#<server>
+#  type WSGI-PostmortemDebuggingHTTP
+#  address 8080
+#</server>
+
+# uncomment this if you want the FTP server up and running
+#<server fttp>
+#  type FTP
+#  address 8021
+#</server>
+
+# Standard Filestorage
+<zodb>
+  <filestorage>
+    path $DATADIR/Data.fs
+  </filestorage>
+
+# uncomment this if you want to connect to a local ZEO server
+# instead:
+#  <zeoclient>
+#    server localhost:9999
+#    storage 1
+#    # ZEO client cache, in bytes
+#    cache-size 20MB
+#    # Uncomment to have a persistent disk cache
+#    #client zeo1
+#  </zeoclient>
+</zodb>
+
+<accesslog>
+  # This sets up logging to both a file (access.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path $LOGDIR/access.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</accesslog>
+
+<eventlog>
+  # This sets up logging to both a file and to standard output
+  # (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path $LOGDIR/z3.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</eventlog>
+
+# devmode
+#
+#   Switches the Developer Mode on and off.
+#
+# Default:
+#   devmode on
+#
+#devmode off

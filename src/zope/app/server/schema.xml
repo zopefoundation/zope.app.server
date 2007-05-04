@@ -1,0 +1,47 @@
+<schema extends="package:zope.app.appsetup:schema/schema.xml">
+
+  <!-- logging configuration -->
+  <import package="zope.app.server" file="accesslog.xml" />
+
+  <sectiontype name="server" datatype="zope.app.server.server.ServerFactory">
+    <key name="type" required="yes" />
+    <key name="address" datatype="inet-binding-address" />
+    <key name="verbose" datatype="boolean" />
+  </sectiontype>
+
+  <section type="accesslog" attribute="accesslog" name="*"
+           required="yes">
+    <description>
+      Configuration for the access log.
+    </description>
+  </section>
+
+  <multisection type="server" name="*" attribute="servers" />
+
+  <key name="interrupt-check-interval" datatype="integer" default="120"
+       attribute="check_interval">
+    <description>
+      Value passed to Python's sys.setcheckinterval() function.
+
+      This integer value determines how often the interpreter checks
+      for periodic things such as thread switches and signal handlers.
+      Setting it to a larger value may increase performance for
+      programs using threads.  Setting it to a value &lt;= 0 checks every
+      virtual instruction, maximizing responsiveness as well as
+      overhead.
+    </description>
+  </key>
+
+  <key name="threads" datatype="integer" default="4">
+    <description>
+      The number of threads which should be used to serve requests.
+
+      The threads are placed in a pool and are used to serve requests
+      received from the servers configured using &lt;server&gt;
+      sections.  This does not constrain the total number of threads
+      used by the application server; additional threads may be used
+      for internal purposes.
+    </description>
+  </key>
+
+</schema>

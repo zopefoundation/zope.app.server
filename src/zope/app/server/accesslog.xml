@@ -1,0 +1,17 @@
+<component>
+
+  <import package="ZConfig.components.logger" file="handlers.xml"/>
+  <import package="ZConfig.components.logger" file="logger.xml"/>
+
+  <sectiontype name="accesslog"
+               datatype="zope.app.server.accesslog.AccessLogFactory"
+               extends="ZConfig.logger.base-logger">
+    <description>
+      Configuration for the access logger.
+
+      Note that the setting of verbosity level and message formats are not
+      used.  All logging is done using the Common Log Format.
+    </description>
+  </sectiontype>
+
+</component>
