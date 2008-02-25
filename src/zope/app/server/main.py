@@ -15,14 +15,13 @@
 
 $Id$
 """
+import asyncore
 import logging
 import os
 import sys
 import time
 
 from zdaemon import zdoptions
-
-import ThreadedAsync
 
 import zope.app.appsetup.appsetup
 import zope.app.appsetup.interfaces
@@ -47,6 +46,8 @@ class ZopeOptions(zdoptions.ZDOptions):
         return None
 
 
+
+exit_status = None
 def main(args=None):
     # Record start times (real time and CPU time)
     t0 = time.time()
@@ -59,7 +60,7 @@ def main(args=None):
     logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
 
     run()
-    sys.exit(0)
+    sys.exit(exit_status or 0)
 
 
 def debug(args=None):
@@ -77,11 +78,13 @@ def debug(args=None):
 
 def run():
     try:
-        ThreadedAsync.loop()
+        global exit_status
+        while asyncore.socket_map and exit_status is None:
+            asyncore.poll(30.0)
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass
-
+    
 
 def load_options(args=None):
     if args is None:

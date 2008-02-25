@@ -15,9 +15,11 @@
 
 $Id$
 """
-from ThreadedAsync import LoopCallback
+
 from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.interface import implements
+
+import zope.app.server.main
 
 class ServerControl(object):
 
@@ -29,7 +31,7 @@ class ServerControl(object):
 
         # This will work for servers started directly and by zdaemon. Passing
         # an exit status of 0 causes zdaemon to not restart the process.
-        LoopCallback.exit_status = 0
+        zope.app.server.main.exit_status = 0
 
     def restart(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""
@@ -38,7 +40,7 @@ class ServerControl(object):
         # TODO: Make sure this is only called if we are running via zdaemon.
 
         # Passing an exit status of 1 causes zdaemon to restart the process.
-        LoopCallback.exit_status = 1
+        zope.app.server.main.exit_status = 1
         
 
 serverControl = ServerControl()

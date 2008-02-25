@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+3.4.1 (2008-02-25)
+------------------
+
+- Fixed restart so that the process exits with a non-zero exit status
+  so it gets restarted by zdaemon, or an equivalent mechanism.
+
+- Removed the use of ThreadedAsync.
+
 3.4.0 (2007-10-27)
 ------------------
 
