@@ -242,13 +242,13 @@ def get_password_managers(config_path=None):
         from zope.app.authentication.password import managers
     else:
         from zope.configuration import xmlconfig
-        from zope.app import zapi
+        from zope.component import getUtilitiesFor
         from zope.app.authentication.interfaces import IPasswordManager
 
         print "Loading configuration..."
         config = xmlconfig.file(config_path)
         managers = []
-        for name, manager in zapi.getUtilitiesFor(IPasswordManager):
+        for name, manager in getUtilitiesFor(IPasswordManager):
             if name == "Plain Text":
                 managers.insert(0, (name, manager))
             else:

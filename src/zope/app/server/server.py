@@ -17,7 +17,7 @@ This is called by the ZConfig machinery while processing a configuration.
 
 $Id$
 """
-from zope.app import zapi
+import zope.component
 from zope.app.server.servertype import IServerType
 
 class ServerFactory(object):
@@ -36,7 +36,7 @@ class ServerFactory(object):
     def create(self, task_dispatcher, database):
         """Return a server based on the server types defined via ZCML."""
 
-        servertype = zapi.getUtility(IServerType, self.type)
+        servertype = zope.component.getUtility(IServerType, self.type)
         # The server object self-registers with the asyncore mainloop.
         return servertype.create(
             self.type,
