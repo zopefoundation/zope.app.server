@@ -26,8 +26,10 @@ import zope.interface
 class FTPRequestFactory(object):
     """FTP Request factory
 
-    FTP request factories for a given database create FTP requets with
+    FTP request factories for a given database create FTP requests with
     publications on the given database:
+
+.. The test below has been disabled and moved to test_ftp.py (LP #257954)
 
       >>> from ZODB.tests.util import DB
       >>> db = DB()

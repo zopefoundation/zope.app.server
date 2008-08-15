@@ -22,10 +22,10 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.server',
-      version = '3.5.0dev',
+      version = '3.4.2dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      description='ZServer Integration for Zope 3 Applications',
+      author_email='zope-dev@zope.org',
+      description='ZServer integration for Zope 3 Applications',
       long_description=(
           read('README.txt')
           + '\n\n' +

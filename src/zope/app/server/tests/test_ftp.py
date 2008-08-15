@@ -16,12 +16,23 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+
+class Tests(unittest.TestCase):
+
+    def test_ftp(self):
+        from ZODB.tests.util import DB
+        from zope.app.server.ftp import FTPRequestFactory
+        from cStringIO import StringIO
+        db = DB()
+        factory = FTPRequestFactory(db)
+        request = factory(StringIO(''), {'credentials': None, 'path': '/'})
+        self.assertTrue(request.publication.db is db)
+        db.close()
+
 
 def test_suite():
-    return unittest.TestSuite((
-        DocTestSuite('zope.app.server.ftp'),
-        ))
+    loader = unittest.TestLoader()
+    return loader.loadTestsFromTestCase(Tests)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
