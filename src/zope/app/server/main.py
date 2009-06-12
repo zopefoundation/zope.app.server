@@ -24,7 +24,7 @@ import time
 from zdaemon import zdoptions
 
 import zope.app.appsetup.appsetup
-import zope.app.appsetup.interfaces
+import zope.processlifetime
 import zope.app.appsetup.product
 from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
@@ -72,7 +72,7 @@ def debug(args=None):
     zope.app.appsetup.config(options.site_definition)
 
     db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
-    notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
+    notify(zope.processlifetime.DatabaseOpened(db))
     return db
 
 
@@ -84,7 +84,7 @@ def run():
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass
-    
+
 
 def load_options(args=None):
     if args is None:
@@ -121,7 +121,7 @@ def setup(options):
 
     db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
 
-    notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
+    notify(zope.processlifetime.DatabaseOpened(db))
 
     task_dispatcher = ThreadedTaskDispatcher()
     task_dispatcher.setThreadCount(options.threads)
@@ -129,6 +129,6 @@ def setup(options):
     for server in options.servers:
         server.create(task_dispatcher, db)
 
-    notify(zope.app.appsetup.interfaces.ProcessStarting())
+    notify(zope.processlifetime.ProcessStarting())
 
     return db

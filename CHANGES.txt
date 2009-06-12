@@ -5,7 +5,9 @@ CHANGES
 3.4.3 (unreleased)
 ------------------
 
-- ...
+- Depend on new ``zope.processlifetime`` implementations instead of
+  using BBB imports from ``zope.app.appsetup``.
+
 
 3.4.2 (2008-08-18)
 ------------------
@@ -19,7 +21,7 @@ CHANGES
 - Fixed restart so that the process exits with a non-zero exit status
   so it gets restarted by zdaemon, or an equivalent mechanism.
 
-- Removed the use of ThreadedAsync.
+- Removed the use of ``ThreadedAsync``.
 
 3.4.0 (2007-10-27)
 ------------------
