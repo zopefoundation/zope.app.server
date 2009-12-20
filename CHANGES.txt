@@ -2,7 +2,13 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.1 (Unreleased)
+------------------
+
+- ...
+
+
+3.5.0 (2009-12-19)
 ------------------
 
 - Use ``zope.password`` instead of ``zope.app.authentication``
