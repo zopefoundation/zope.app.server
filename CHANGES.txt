@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-3.4.3 (unreleased)
+3.5.0 (unreleased)
 ------------------
+
+- Use ``zope.password`` instead of ``zope.app.authentication``
 
 - Depend on new ``zope.processlifetime`` implementations instead of
   using BBB imports from ``zope.app.appsetup``.

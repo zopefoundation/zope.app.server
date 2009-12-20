@@ -239,11 +239,11 @@ class Application(object):
 
 def get_password_managers(config_path=None):
     if not config_path:
-        from zope.app.authentication.password import managers
+        from zope.password.password import managers
     else:
         from zope.configuration import xmlconfig
         from zope.component import getUtilitiesFor
-        from zope.app.authentication.interfaces import IPasswordManager
+        from zope.password.interfaces import IPasswordManager
 
         print "Loading configuration..."
         config = xmlconfig.file(config_path)
@@ -254,7 +254,7 @@ def get_password_managers(config_path=None):
             else:
                 managers.append((name, manager))
         if not managers:
-            from zope.app.authentication.password import managers
+            from zope.password.password import managers
     return managers
 
 def parse_args(argv):

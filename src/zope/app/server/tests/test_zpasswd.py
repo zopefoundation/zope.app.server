@@ -17,11 +17,9 @@ $Id$
 """
 
 import os
-import unittest
+import unittest, doctest
 
-from zope.testing.doctestunit import DocTestSuite
-
-from zope.app.authentication import password
+from zope.password import password
 from zope.app.server.tests.test_mkzopeinstance import TestBase
 
 from zope.app.server import zpasswd
@@ -132,7 +130,7 @@ class InputCollectionTestCase(TestBase):
 
 
 def test_suite():
-    suite = DocTestSuite('zope.app.server.zpasswd')
+    suite = doctest.DocTestSuite('zope.app.server.zpasswd')
     suite.addTest(unittest.makeSuite(ArgumentParsingTestCase))
     suite.addTest(unittest.makeSuite(InputCollectionTestCase))
     return suite

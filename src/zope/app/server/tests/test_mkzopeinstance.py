@@ -198,7 +198,7 @@ class InputCollectionTestCase(TestBase):
         f = open(os.path.join(self.skeleton, 'bin', 'runzope.in'), 'w')
         f.write('runzope')
         f.close()
-        
+
         options = self.createOptions()
         options.destination = self.instance
         options.interactive = False

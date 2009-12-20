@@ -29,7 +29,7 @@ import sys
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
 import zope.app.server
-from zope.app.authentication import password
+from zope.password import password
 from zope.app.applicationcontrol import zopeversion
 
 def main(argv=None, from_checkout=False):
@@ -193,7 +193,7 @@ class Application(object):
                     index -= 1
                     break
             print >>sys.stderr, "You must select a password manager"
-        print "%r password manager selected" % password.managers[index][0] 
+        print "%r password manager selected" % password.managers[index][0]
         return password.managers[index]
 
     def print_message(self, message):
@@ -227,7 +227,7 @@ class Application(object):
                              'zopeskel'),
                 self.options.destination,
                 )
-            
+
 
     def copytree(self, src, dst):
         # Similar to shutil.copytree(), but doesn't care about
@@ -327,7 +327,7 @@ that we can gain more experience with it.
 """,
                  )
 
-    
+
     options, args = p.parse_args(argv[1:])
     if options.skeleton is None:
         options.add_package_includes = from_checkout
