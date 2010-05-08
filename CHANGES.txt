@@ -5,7 +5,8 @@ CHANGES
 3.5.1 (Unreleased)
 ------------------
 
-- ...
+- Moved ``zope.app.server.zpasswd`` to ``zope.password.zpasswd``. A
+  deprecation warning is raised when import ``zpasswd``.
 
 
 3.5.0 (2009-12-19)
