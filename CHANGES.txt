@@ -2,13 +2,10 @@
 CHANGES
 =======
 
-3.5.1 (Unreleased)
+3.6.0 (unreleased)
 ------------------
 
-- Let ``zope.app.server`` comply to zope.org repository policy.
-
-- Moved ``zope.app.server.zpasswd`` to ``zope.password.zpasswd``. A
-  deprecation warning is raised when import ``zpasswd``.
+- Moved ``zope.app.server.zpasswd`` to ``zope.password.zpasswd``.
 
 
 3.5.0 (2009-12-19)
