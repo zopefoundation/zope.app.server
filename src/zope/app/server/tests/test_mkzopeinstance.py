@@ -263,11 +263,10 @@ class InputCollectionTestCase(TestBase):
     def test_get_password_manager(self):
         options = self.createOptions()
         options.password_manager = None
-        app = ControlledInputApplication(options, ["3"])
+        app = ControlledInputApplication(options, ["1"])
         name, pwm = app.get_password_manager()
-        self.assertEqual(name, "SHA1")
-        self.assertEqual(pwm.encodePassword("foo")[-40:],
-            "0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33")
+        self.assertEqual(name, "Plain Text")
+        self.assertEqual(pwm.encodePassword("foo"), "foo")
         self.failIf(self.stderr.getvalue())
         self.failUnless(self.stdout.getvalue())
         self.failUnless(app.all_input_consumed())
