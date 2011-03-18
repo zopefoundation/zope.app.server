@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Server Control Implementation
-
-$Id$
 """
 
 from zope.app.applicationcontrol.interfaces import IServerControl

@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Tests for zope.app.server.accesslog.
-
-$Id$
 """
 import logging
 import unittest

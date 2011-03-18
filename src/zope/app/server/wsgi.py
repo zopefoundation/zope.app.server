@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """WSGI-compliant HTTP server setup.
-
-$Id$
 """
 __docformat__ = "reStructuredText"
 

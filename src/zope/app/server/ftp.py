@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """FTP server
-
-$Id$
 """
 from zope.app.publication.ftp import FTPPublication
 from zope.app.publication.interfaces import IPublicationRequestFactory

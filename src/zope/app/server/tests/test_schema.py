@@ -12,10 +12,7 @@
 #
 ##############################################################################
 """Test that the Zope appserver configuration schema can be loaded.
-
-$Id$
 """
-
 import os.path
 import unittest
 

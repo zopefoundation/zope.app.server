@@ -14,8 +14,6 @@
 """Datatype for a <server> section in a Zope 3 configuration file.
 
 This is called by the ZConfig machinery while processing a configuration.
-
-$Id$
 """
 import zope.component
 from zope.app.server.servertype import IServerType

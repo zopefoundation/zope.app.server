@@ -13,8 +13,6 @@
 #
 ##############################################################################
 """Script to run the Zope Application Server from the Python prompt.
-
-$Id$
 """
 import os
 import sys

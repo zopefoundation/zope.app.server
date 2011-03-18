@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Functions that control how the Zope appserver knits itself together.
-
-$Id$
 """
 import asyncore
 import logging

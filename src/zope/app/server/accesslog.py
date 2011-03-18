@@ -15,8 +15,6 @@
 
 This assumes that access logging is being performed through the logger
 object returned by logging.getLogger('accesslog').
-
-$Id$
 """
 import logging
 

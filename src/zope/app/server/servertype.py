@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Server Type
-
-$Id$
 """
 from zope.interface import Interface, implements
 

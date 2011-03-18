@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Tests for the implementation of the mkzopeinstance script.
-
-$Id$
 """
 import os
 import shutil

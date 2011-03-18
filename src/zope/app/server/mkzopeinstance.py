@@ -19,8 +19,6 @@ This creates a new instances of the Zope server instance home.  An
 - application server configuration and data
 
 - server process control scripts and data
-
-$Id$
 """
 import optparse
 import os
