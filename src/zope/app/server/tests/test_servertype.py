@@ -12,13 +12,11 @@
 #
 ##############################################################################
 """Tests for zope.app.server.servertype
-
-$Id$
 """
 import unittest
+import doctest
 
 from zope.interface.verify import verifyObject
-from zope.testing import doctest
 
 
 def doctest_ServerType():

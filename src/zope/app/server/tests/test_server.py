@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """Tests for zope.app.server.server
-
-$Id$
 """
 import unittest
+import doctest
 
 from zope.interface.verify import verifyObject
-from zope.testing import doctest
-from zope.app.testing import ztapi, setup, placelesssetup
+from zope.component import provideUtility
+from zope.app.testing import setup
 
 
 def doctest_ServerFactory():
@@ -41,8 +40,8 @@ def doctest_ServerFactory():
         ...         return ('%s server on %s:%d, registered with %s,\n'
         ...                 'serving from %s, verbosity %s'
         ...                 % (name, ip, port, task_dispatcher, db, verbose))
-        >>> ztapi.provideUtility(IServerType, MyServerType(), name='HTTP')
-        >>> ztapi.provideUtility(IServerType, MyServerType(), name='FTP')
+        >>> provideUtility(MyServerType(), IServerType, name='HTTP')
+        >>> provideUtility(MyServerType(), IServerType, name='FTP')
 
     ServerFactory is used to hook into ZConfig and create instances of servers
     specified in zope.conf.  It gets a `section` argument that contains
