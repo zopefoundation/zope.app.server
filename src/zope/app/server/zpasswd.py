@@ -14,4 +14,4 @@
 """Implementation of the zpasswd script.
 """
 import zope.deprecation
-zope.deprecation.moved('zope.password.zpasswd', 'zope.app.server 3.6.0')
+zope.deprecation.moved('zope.password.zpasswd', 'zope.app.server 3.7.0')
