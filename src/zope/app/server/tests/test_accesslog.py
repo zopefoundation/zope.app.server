@@ -17,10 +17,15 @@ import logging
 import unittest
 
 from ZConfig.components.logger import loghandler
-from ZConfig.components.logger.tests import test_logger
 
+try:
+    from ZConfig.components.logger.tests.test_logger import LoggingTestBase
+except ImportError:
+    from ZConfig.components.logger.tests.test_logger import LoggingTestHelper
+    class LoggingTestBase(LoggingTestHelper, unittest.TestCase):
+        pass
 
-class TestAccessLogging(test_logger.LoggingTestBase):
+class TestAccessLogging(LoggingTestBase):
 
     name = "accesslog"
 
