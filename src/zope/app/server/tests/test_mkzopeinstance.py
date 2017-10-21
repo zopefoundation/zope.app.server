@@ -66,7 +66,7 @@ class ArgumentParsingTestCase(unittest.TestCase):
         try:
             with capture_output() as (stdout, stderr):
                 self.parse_args(args, stdout, stderr)
-        except SystemExit, e:
+        except SystemExit as e:
             self.assertEqual(e.code, 0)
             self.assert_(stdout.getvalue())
             self.failIf(stderr.getvalue())
@@ -141,7 +141,7 @@ class ArgumentParsingTestCase(unittest.TestCase):
     def test_junk_positional_arg(self):
         try:
             self.parse_args(["junk"])
-        except SystemExit, e:
+        except SystemExit as e:
             self.assert_(e.code)
         else:
             self.fail("expected SystemExit")
@@ -283,7 +283,7 @@ class InputCollectionTestCase(unittest.TestCase):
         try:
             with capture_output() as (stdout, stderr):
                 app.get_password_manager()
-        except SystemExit, e:
+        except SystemExit as e:
             self.assertEqual(e.code, 1)
         else:
             self.fail("expected SystemExit")
@@ -307,7 +307,7 @@ class InputCollectionTestCase(unittest.TestCase):
         try:
             with capture_output() as (stdout, stderr):
                 app.get_password()
-        except SystemExit, e:
+        except SystemExit as e:
             self.assertEqual(e.code, 1)
         else:
             self.fail("expected SystemExit")

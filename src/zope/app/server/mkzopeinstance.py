@@ -36,7 +36,7 @@ def main(argv=None, from_checkout=False):
         argv = sys.argv
     try:
         options = parse_args(argv, from_checkout)
-    except SystemExit, e:
+    except SystemExit as e:
         if e.code:
             return 2
         else:
@@ -46,7 +46,7 @@ def main(argv=None, from_checkout=False):
         return app.process()
     except KeyboardInterrupt:
         return 1
-    except SystemExit, e:
+    except SystemExit as e:
         return e.code
 
 
@@ -95,7 +95,7 @@ class Application(object):
         if not os.path.exists(options.destination):
             try:
                 os.mkdir(options.destination)
-            except OSError, e:
+            except OSError as e:
                 print >>sys.stderr, "could not create instance home:", e
                 return 1
         elif not os.path.isdir(options.destination):
