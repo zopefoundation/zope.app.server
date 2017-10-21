@@ -20,6 +20,9 @@ This creates a new instances of the Zope server instance home.  An
 
 - server process control scripts and data
 """
+
+from __future__ import print_function
+
 import optparse
 import os
 import shutil
@@ -29,6 +32,7 @@ from xml.sax.saxutils import quoteattr as xml_quoteattr
 import zope.app.server
 from zope.password import password
 from zope.app.applicationcontrol import zopeversion
+
 
 def main(argv=None, from_checkout=False):
     """Top-level script function to create a new Zope instance."""
@@ -59,16 +63,16 @@ class Application(object):
     def read_input_line(self, prompt):
         # The tests replace this to make sure the right things happen.
         if not self.options.interactive:
-            print >>sys.stderr, ('Error: Tried to ask for user input in'
-                                 ' non-interactive mode.')
+            print('Error: Tried to ask for user input in'
+                  ' non-interactive mode.', file=sys.stderr)
             sys.exit(1)
         return raw_input(prompt)
 
     def read_password(self, prompt):
         # The tests replace this to make sure the right things happen.
         if not self.options.interactive:
-            print >>sys.stderr, ('Error: Tried to ask for user input in'
-                                 ' non-interactive mode.')
+            print('Error: Tried to ask for user input in'
+                  ' non-interactive mode.', file=sys.stderr)
             sys.exit(1)
         import getpass
         try:
@@ -76,7 +80,7 @@ class Application(object):
         except KeyboardInterrupt:
             # The cursor was left on the same line as the prompt,
             # which we don't like.  Print a blank line.
-            print
+            print()
             raise
 
     def process(self):
@@ -84,8 +88,8 @@ class Application(object):
 
         # make sure we can find the skeleton
         if not os.path.isdir(options.skeleton):
-            print >>sys.stderr, "skeleton directory", options.skeleton
-            print >>sys.stderr, "does not exist or is not a directory"
+            print("skeleton directory", options.skeleton, file=sys.stderr)
+            print("does not exist or is not a directory", file=sys.stderr)
             return 1
 
         # create the destination
@@ -96,12 +100,12 @@ class Application(object):
             try:
                 os.mkdir(options.destination)
             except OSError as e:
-                print >>sys.stderr, "could not create instance home:", e
+                print("could not create instance home:", e, file=sys.stderr)
                 return 1
         elif not os.path.isdir(options.destination):
-            print >>sys.stderr, options.destination, "is not a directory"
-            print >>sys.stderr, ("(instance homes cannot be created in"
-                                 " non-directories)")
+            print(options.destination, "is not a directory", file=sys.stderr)
+            print("(instance homes cannot be created in non-directories)",
+                  file=sys.stderr)
             return 1
 
         if not options.username:
@@ -132,7 +136,7 @@ class Application(object):
         while 1:
             skeltarget = self.read_input_line("Directory: ").strip()
             if skeltarget == '':
-                print >>sys.stderr, 'You must specify a directory'
+                print('You must specify a directory', file=sys.stderr)
                 continue
             return os.path.expanduser(skeltarget)
 
@@ -142,7 +146,7 @@ class Application(object):
         while 1:
             username = self.read_input_line("Username: ").strip()
             if not username:
-                print >>sys.stderr, "You must specify an administrative user"
+                print("You must specify an administrative user", file=sys.stderr)
                 continue
             return username
 
@@ -151,15 +155,15 @@ class Application(object):
         while 1:
             password = self.read_password("Password: ")
             if not password:
-                print >>sys.stderr, "Password may not be empty"
+                print("Password may not be empty", file=sys.stderr)
                 continue
             if password != password.strip() or password.split() != [password]:
-                print >>sys.stderr, "Password may not contain spaces"
+                print("Password may not contain spaces", file=sys.stderr)
                 continue
             break
         again = self.read_password("Verify password: ")
         if again != password:
-            print >>sys.stderr, "Password not verified!"
+            print("Password not verified!", file=sys.stderr)
             sys.exit(1)
         return password
 
@@ -171,13 +175,13 @@ class Application(object):
             for name, manager in password.managers:
                 if name == self.options.password_manager:
                     return (name, manager)
-            print >>sys.stderr, "Unknown password manager!"
+            print("Unknown password manager!", file=sys.stderr)
             sys.exit(1)
 
         self.print_message(PASSWORD_MANAGER_MESSAGE)
         for i, (name, manager) in enumerate(password.managers):
-            print "% i. %s" % (i + 1, name)
-        print
+            print("% i. %s" % (i + 1, name))
+        print()
         self.need_blank_line = True
         while 1:
             password_manager = self.read_input_line(
@@ -190,15 +194,15 @@ class Application(object):
                 if index > 0 and index <= len(password.managers):
                     index -= 1
                     break
-            print >>sys.stderr, "You must select a password manager"
-        print "%r password manager selected" % password.managers[index][0]
+            print("You must select a password manager", file=sys.stderr)
+        print("%r password manager selected" % password.managers[index][0])
         return password.managers[index]
 
     def print_message(self, message):
         if self.need_blank_line:
-            print
+            print()
             self.need_blank_line = False
-        print message
+        print(message)
 
     def copy_skeleton(self):
         options = self.options

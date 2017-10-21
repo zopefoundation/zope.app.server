@@ -62,7 +62,7 @@ def doctest_ServerFactory():
 
         >>> task_dispatcher = 'my task dispatcher'
         >>> db = 'my db'
-        >>> print sf.create(task_dispatcher, db)
+        >>> print(sf.create(task_dispatcher, db))
         HTTP server on *:8080, registered with my task dispatcher,
         serving from my db, verbosity False
 
@@ -72,7 +72,7 @@ def doctest_ServerFactory():
         >>> my_section.address = ('127.0.0.1', 8021)
         >>> my_section.verbose = True
         >>> sf = ServerFactory(my_section)
-        >>> print sf.create(task_dispatcher, db)
+        >>> print(sf.create(task_dispatcher, db))
         FTP server on 127.0.0.1:8021, registered with my task dispatcher,
         serving from my db, verbosity True
 

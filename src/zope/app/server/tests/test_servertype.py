@@ -36,15 +36,15 @@ def doctest_ServerType():
         ...             task_dispatcher=None, hit_log=None, verbose=False):
         ...     if ip == '':
         ...         ip = '*' # listen on all network interfaces
-        ...     print "Starting a server (%s) on %s:%d" % (name, ip, port)
-        ...     print "This server will use %s to construct requests" % \
-        ...           request_factory
-        ...     print "This server will use %s for hit logging" % hit_log
+        ...     print("Starting a server (%s) on %s:%d" % (name, ip, port))
+        ...     print("This server will use %s to construct requests" %
+        ...           request_factory)
+        ...     print("This server will use %s for hit logging" % hit_log)
         ...     if verbose:
-        ...         print "This server will be verbose"
+        ...         print("This server will be verbose")
         ...     else:
-        ...         print "This server will not be verbose"
-        ...     print "This server will be managed by %s" % task_dispatcher
+        ...         print("This server will not be verbose")
+        ...     print("This server will be managed by %s" % task_dispatcher)
 
     The 'requestFactory' argument specifies a function that returns a factory
     for requests (e.g.  HTTPPublicationRequestFactory from
