@@ -18,42 +18,40 @@ import shutil
 import sys
 import tempfile
 import unittest
-import zope.app.server
-
+from contextlib import contextmanager
 from StringIO import StringIO
 
 from zope.app.server import mkzopeinstance
 
 
-class TestBase(unittest.TestCase):
-
-    def setUp(self):
-        self.stdout = StringIO()
-        self.stderr = StringIO()
-        self.old_stdout = sys.stdout
-        self.old_stderr = sys.stderr
-        sys.stdout = self.stdout
-        sys.stderr = self.stderr
-
-    def tearDown(self):
-        sys.stdout = self.old_stdout
-        sys.stderr = self.old_stderr
+@contextmanager
+def capture_output(stdout=None, stderr=None):
+    old_stdout = sys.stdout
+    old_stderr = sys.stderr
+    sys.stdout = stdout = stdout or StringIO()
+    sys.stderr = stderr = stderr or StringIO()
+    try:
+        yield stdout, stderr
+    finally:
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
 
 
-class ArgumentParsingTestCase(TestBase):
+class ArgumentParsingTestCase(unittest.TestCase):
     """Ensure the command line is properly converted to an options
     object.
     """
 
-    def parse_args(self, args):
+    def parse_args(self, args, stdout=None, stderr=None):
         argv = ["foo/bar.py"] + args
-        options = mkzopeinstance.parse_args(argv)
+        with capture_output(stdout, stderr):
+            options = mkzopeinstance.parse_args(argv)
         self.assertEqual(options.program, "bar.py")
         self.assert_(options.version)
         return options
 
     def test_no_arguments(self):
-        options = self.parse_args([])
+        self.parse_args([])
 
     def test_version_long(self):
         self.check_stdout_content(["--version"])
@@ -66,11 +64,12 @@ class ArgumentParsingTestCase(TestBase):
 
     def check_stdout_content(self, args):
         try:
-            options = self.parse_args(args)
+            with capture_output() as (stdout, stderr):
+                self.parse_args(args, stdout, stderr)
         except SystemExit, e:
             self.assertEqual(e.code, 0)
-            self.assert_(self.stdout.getvalue())
-            self.failIf(self.stderr.getvalue())
+            self.assert_(stdout.getvalue())
+            self.failIf(stderr.getvalue())
         else:
             self.fail("expected SystemExit")
 
@@ -148,7 +147,7 @@ class ArgumentParsingTestCase(TestBase):
             self.fail("expected SystemExit")
 
 
-class InputCollectionTestCase(TestBase):
+class InputCollectionTestCase(unittest.TestCase):
 
     def setUp(self):
         super(InputCollectionTestCase, self).setUp()
@@ -171,17 +170,19 @@ class InputCollectionTestCase(TestBase):
         options = self.createOptions()
         input = ["  ", " foo "]
         app = ControlledInputApplication(options, input)
-        skel = app.get_skeltarget()
+        with capture_output() as (stdout, stderr):
+            skel = app.get_skeltarget()
         self.assertEqual(skel, "foo")
         self.assertEqual(input, [])
-        self.assert_(self.stdout.getvalue())
+        self.assert_(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_process_creates_destination(self):
         options = self.createOptions()
         input = [self.instance]
         app = ControlledInputApplication(options, input)
-        self.assertEqual(app.process(), 0)
+        with capture_output() as (stdout, stderr):
+            self.assertEqual(app.process(), 0)
         self.assert_(os.path.isdir(self.instance))
         self.assertEqual(input, [])
         self.failUnless(app.all_input_consumed())
@@ -202,7 +203,8 @@ class InputCollectionTestCase(TestBase):
         options.interactive = False
         options.zserver = True
         app = ControlledInputApplication(options, [])
-        self.assertEqual(app.process(), 0)
+        with capture_output() as (stdout, stderr):
+            self.assertEqual(app.process(), 0)
         self.assert_(
             'from zope.app.server.main import main' in
             open(os.path.join(self.instance, 'bin', 'runzope')).read()
@@ -215,58 +217,63 @@ class InputCollectionTestCase(TestBase):
             os.path.join(self.instance, 'etc', 'zope.conf')
             ))
 
-
     def test_process_aborts_on_file_destination(self):
         options = self.createOptions()
         options.destination = self.instance
         open(self.instance, "w").close()
         app = ControlledInputApplication(options, [])
-        self.assertEqual(app.process(), 1)
-        self.assert_(self.stderr.getvalue())
+        with capture_output() as (stdout, stderr):
+            self.assertEqual(app.process(), 1)
+        self.assert_(stderr.getvalue())
 
     def test_process_aborts_on_failed_destination_creation(self):
         options = self.createOptions()
         options.destination = os.path.join(self.instance, "foo")
         app = ControlledInputApplication(options, [])
-        self.assertEqual(app.process(), 1)
-        self.assert_(self.stderr.getvalue())
+        with capture_output() as (stdout, stderr):
+            self.assertEqual(app.process(), 1)
+        self.assert_(stderr.getvalue())
 
     def test_get_username(self):
         options = self.createOptions()
         app = ControlledInputApplication(options, ["myuser"])
-        usr = app.get_username()
+        with capture_output() as (stdout, stderr):
+            usr = app.get_username()
         self.assertEqual(usr, "myuser")
-        self.failIf(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failIf(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_username_strips_whitespace(self):
         options = self.createOptions()
         app = ControlledInputApplication(options, ["  myuser\t"])
-        usr = app.get_username()
+        with capture_output() as (stdout, stderr):
+            usr = app.get_username()
         self.assertEqual(usr, "myuser")
-        self.failIf(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failIf(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_username_ignores_empty_names(self):
         options = self.createOptions()
         app = ControlledInputApplication(options, ["", "  ", "\t", "myuser"])
-        usr = app.get_username()
+        with capture_output() as (stdout, stderr):
+            usr = app.get_username()
         self.assertEqual(usr, "myuser")
-        self.failUnless(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failUnless(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_password_manager(self):
         options = self.createOptions()
         options.password_manager = None
         app = ControlledInputApplication(options, ["1"])
-        name, pwm = app.get_password_manager()
+        with capture_output() as (stdout, stderr):
+            name, pwm = app.get_password_manager()
         self.assertEqual(name, "Plain Text")
         self.assertEqual(pwm.encodePassword("foo"), "foo")
-        self.failIf(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failIf(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_wrong_password_manager(self):
@@ -274,45 +281,49 @@ class InputCollectionTestCase(TestBase):
         options.password_manager = "Unknown"
         app = ControlledInputApplication(options, [])
         try:
-            app.get_password_manager()
+            with capture_output() as (stdout, stderr):
+                app.get_password_manager()
         except SystemExit, e:
             self.assertEqual(e.code, 1)
         else:
             self.fail("expected SystemExit")
-        self.failUnless(self.stderr.getvalue())
-        self.failIf(self.stdout.getvalue())
+        self.failUnless(stderr.getvalue())
+        self.failIf(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_password(self):
         options = self.createOptions()
         app = ControlledInputApplication(options, ["foo", "foo"])
-        pw = app.get_password()
+        with capture_output() as (stdout, stderr):
+            pw = app.get_password()
         self.assertEqual(pw, "foo")
-        self.failIf(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failIf(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_password_not_verified(self):
         options = self.createOptions()
         app = ControlledInputApplication(options, ["foo", "bar"])
         try:
-            app.get_password()
+            with capture_output() as (stdout, stderr):
+                app.get_password()
         except SystemExit, e:
             self.assertEqual(e.code, 1)
         else:
             self.fail("expected SystemExit")
-        self.failUnless(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failUnless(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_password_empty(self):
         # Make sure the empty password is ignored.
         options = self.createOptions()
         app = ControlledInputApplication(options, ["", "foo", "foo"])
-        pw = app.get_password()
+        with capture_output() as (stdout, stderr):
+            pw = app.get_password()
         self.assertEqual(pw, "foo")
-        self.failUnless(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failUnless(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_get_password_disallows_whitespace(self):
@@ -320,10 +331,11 @@ class InputCollectionTestCase(TestBase):
         options = self.createOptions()
         app = ControlledInputApplication(options, [" ", "\t", "a b",
                                                    " a", "b ", "foo", "foo"])
-        pw = app.get_password()
+        with capture_output() as (stdout, stderr):
+            pw = app.get_password()
         self.assertEqual(pw, "foo")
-        self.failUnless(self.stderr.getvalue())
-        self.failUnless(self.stdout.getvalue())
+        self.failUnless(stderr.getvalue())
+        self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
 
     def test_can_rewrite_existing_instance(self):
@@ -337,7 +349,8 @@ class InputCollectionTestCase(TestBase):
         options = self.createOptions()
         options.destination = self.instance
         app = ControlledInputApplication(options, [])
-        rc = app.process()
+        with capture_output() as (stdout, stderr):
+            rc = app.process()
         self.assertEqual(rc, 0)
         self.failUnless(app.all_input_consumed())
         self.failUnless(os.path.exists(os.path.join(self.instance, "etc")))
@@ -346,7 +359,8 @@ class InputCollectionTestCase(TestBase):
         options = self.createOptions()
         options.destination = self.instance
         app = ControlledInputApplication(options, [])
-        rc = app.process()
+        with capture_output() as (stdout, stderr):
+            rc = app.process()
         self.assertEqual(rc, 0)
         self.failUnless(app.all_input_consumed())
         self.failUnless(os.path.exists(os.path.join(self.instance, "etc")))
@@ -371,7 +385,8 @@ class InputCollectionTestCase(TestBase):
         options = self.createOptions()
         options.destination = self.instance
         app = ControlledInputApplication(options, [])
-        rc = app.process()
+        with capture_output() as (stdout, stderr):
+            app.process()
 
         # check for the expected output: mkzopeinstance should take
         # zope.app as an anchor for determining SOFTWARE_HOME
@@ -383,6 +398,7 @@ class InputCollectionTestCase(TestBase):
 
         # cleanup the fake 'zope' module
         zope.__file__ = old_path
+
 
 class ControlledInputApplication(mkzopeinstance.Application):
 
@@ -415,6 +431,7 @@ def test_suite():
     suite = unittest.makeSuite(ArgumentParsingTestCase)
     suite.addTest(unittest.makeSuite(InputCollectionTestCase))
     return suite
+
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")
