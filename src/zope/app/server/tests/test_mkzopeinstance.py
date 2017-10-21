@@ -381,9 +381,8 @@ class InputCollectionTestCase(unittest.TestCase):
 
         # place a test file into the skeleton dir that'll be expanded
         # to SOFTWARE_HOME by mkzopeinstance
-        f = file(os.path.join(self.skeleton, 'test.in'), 'w')
-        f.write('<<SOFTWARE_HOME>>')
-        f.close()
+        with open(os.path.join(self.skeleton, 'test.in'), 'w') as f:
+            f.write('<<SOFTWARE_HOME>>')
 
         # run mkzopeinstance
         options = self.createOptions()
@@ -397,8 +396,8 @@ class InputCollectionTestCase(unittest.TestCase):
         import zope.app.server
         expected = os.path.dirname(os.path.dirname(os.path.dirname(
             os.path.dirname(zope.app.server.__file__))))
-        self.assertEqual(file(os.path.join(self.instance, 'test')).read(),
-                         expected)
+        with open(os.path.join(self.instance, 'test')) as f:
+            self.assertEqual(f.read(), expected)
 
         # cleanup the fake 'zope' module
         if old_path is None:
