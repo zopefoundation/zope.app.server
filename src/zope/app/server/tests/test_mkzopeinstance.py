@@ -275,7 +275,7 @@ class InputCollectionTestCase(unittest.TestCase):
         with capture_output() as (stdout, stderr):
             name, pwm = app.get_password_manager()
         self.assertEqual(name, "Plain Text")
-        self.assertEqual(pwm.encodePassword("foo"), "foo")
+        self.assertEqual(pwm.encodePassword("foo").decode(), "foo")
         self.failIf(stderr.getvalue())
         self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())

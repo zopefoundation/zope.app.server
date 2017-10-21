@@ -118,6 +118,8 @@ class Application(object):
             options.password = self.get_password()
 
         options.password = password_manager.encodePassword(options.password)
+        if not isinstance(options.password, str):
+            options.password = options.password.decode()
 
         # now create the instance!
         self.copy_skeleton()
