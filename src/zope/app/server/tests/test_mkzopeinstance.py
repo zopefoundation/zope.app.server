@@ -371,7 +371,7 @@ class InputCollectionTestCase(unittest.TestCase):
 
         # let's mess with zope's __file__
         import zope
-        old_path = zope.__file__
+        old_path = getattr(zope, '__file__', None)
         zope.__file__ = os.path.join(
             *'and now for something completely different'.split())
 
@@ -389,15 +389,18 @@ class InputCollectionTestCase(unittest.TestCase):
             app.process()
 
         # check for the expected output: mkzopeinstance should take
-        # zope.app as an anchor for determining SOFTWARE_HOME
-        import zope.app
-        expected = os.path.dirname(os.path.dirname(
-            os.path.dirname(zope.app.__file__)))
+        # zope.app.server as an anchor for determining SOFTWARE_HOME
+        import zope.app.server
+        expected = os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.dirname(zope.app.server.__file__))))
         self.assertEqual(file(os.path.join(self.instance, 'test')).read(),
                          expected)
 
         # cleanup the fake 'zope' module
-        zope.__file__ = old_path
+        if old_path is None:
+            del zope.__file__
+        else:
+            zope.__file__ = old_path
 
 
 class ControlledInputApplication(mkzopeinstance.Application):

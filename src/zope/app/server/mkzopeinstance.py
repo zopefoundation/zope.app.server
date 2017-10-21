@@ -205,7 +205,8 @@ class Application(object):
         # TODO we should be able to compute the script
         script = os.path.abspath(sys.argv[0])
         zope_home = os.path.dirname(os.path.dirname(script))
-        zope_init = os.path.dirname(os.path.abspath(zope.app.__file__))
+        zope_init = os.path.dirname(os.path.dirname(
+            os.path.abspath(zope.app.server.__file__)))
         software_home = os.path.dirname(os.path.dirname(zope_init))
         self.replacements = [
             ("<<USERNAME>>", options.username),
