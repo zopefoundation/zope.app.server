@@ -24,9 +24,9 @@ from zope.app.wsgi import WSGIPublisherApplication
 
 import servertype
 
-class ServerType(object):
 
-    zope.interface.implements(servertype.IServerType)
+@zope.interface.implementer(servertype.IServerType)
+class ServerType(object):
 
     def __init__(self, factory, applicationFactory, logFactory,
                  defaultPort, defaultVerbose, defaultIP='',

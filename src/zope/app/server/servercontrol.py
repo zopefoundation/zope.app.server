@@ -15,13 +15,13 @@
 """
 
 from zope.app.applicationcontrol.interfaces import IServerControl
-from zope.interface import implements
+from zope.interface import implementer
 
 import zope.app.server.main
 
-class ServerControl(object):
 
-    implements(IServerControl)
+@implementer(IServerControl)
+class ServerControl(object):
 
     def shutdown(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""

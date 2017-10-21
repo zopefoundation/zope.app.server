@@ -29,10 +29,10 @@ def doctest_ServerFactory():
 
         >>> setup.placelessSetUp()
 
-        >>> from zope.interface import implements
+        >>> from zope.interface import implementer
         >>> from zope.app.server.servertype import IServerType
-        >>> class MyServerType:
-        ...     implements(IServerType)
+        >>> @implementer(IServerType)
+        ... class MyServerType:
         ...     def create(self, name, task_dispatcher, db, port='unknown',
         ...                verbose='unspecified', ip=''):
         ...         if not ip:

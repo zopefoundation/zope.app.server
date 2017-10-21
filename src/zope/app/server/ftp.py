@@ -21,6 +21,8 @@ from zope.server.ftp.publisher import PublisherFTPServer
 from zope.app.server.servertype import ServerType
 import zope.interface
 
+
+@zope.interface.implementer(IPublicationRequestFactory)
 class FTPRequestFactory(object):
     """FTP Request factory
 
@@ -39,7 +41,6 @@ class FTPRequestFactory(object):
       >>> db.close()
 
     """
-    zope.interface.implements(IPublicationRequestFactory)
 
     def __init__(self, db):
         self.publication = FTPPublication(db)
