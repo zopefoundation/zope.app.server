@@ -15,12 +15,17 @@
 """
 import unittest
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+
 class Tests(unittest.TestCase):
 
     def test_ftp(self):
         from ZODB.tests.util import DB
         from zope.app.server.ftp import FTPRequestFactory
-        from cStringIO import StringIO
         db = DB()
         factory = FTPRequestFactory(db)
         request = factory(StringIO(''), {'credentials': None, 'path': '/'})

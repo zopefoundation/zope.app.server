@@ -19,9 +19,13 @@ import sys
 import tempfile
 import unittest
 from contextlib import contextmanager
-from StringIO import StringIO
 
 from zope.app.server import mkzopeinstance
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 @contextmanager
