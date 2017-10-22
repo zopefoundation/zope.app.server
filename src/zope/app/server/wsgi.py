@@ -22,7 +22,7 @@ from zope.server.http import wsgihttpserver
 from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.wsgi import WSGIPublisherApplication
 
-import servertype
+from zope.app.server import servertype
 
 
 @zope.interface.implementer(servertype.IServerType)
