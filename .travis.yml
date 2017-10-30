@@ -1,10 +1,17 @@
 language: python
+sudo: false
+cache: pip
 python:
     - 2.7
+    - 3.4
+    - 3.5
+    - 3.6
 install:
-    - python bootstrap.py
-    - bin/buildout
+    - pip install coveralls coverage
+    - pip install -e ".[test]"
 script:
-    - bin/test -v1
+    - coverage run -m zope.testrunner --test-path=src -pvc
+after_success:
+    - coveralls
 notifications:
     email: false
