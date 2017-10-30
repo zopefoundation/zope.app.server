@@ -13,12 +13,9 @@
 ##############################################################################
 """Doc tests for the FTP server.
 """
-import unittest
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
+import unittest
+from io import BytesIO
 
 
 class Tests(unittest.TestCase):
@@ -28,7 +25,7 @@ class Tests(unittest.TestCase):
         from zope.app.server.ftp import FTPRequestFactory
         db = DB()
         factory = FTPRequestFactory(db)
-        request = factory(StringIO(''), {'credentials': None, 'path': '/'})
+        request = factory(BytesIO(b''), {'credentials': None, 'path': '/'})
         self.assertTrue(request.publication.db is db)
         db.close()
 
