@@ -34,6 +34,8 @@ class ZopeOptions(zdoptions.ZDOptions):
     logsectionname = None
 
     def default_configfile(self):
+        # XXX: this probably assumes a monolithic zope 3 source tree
+        # layout and isn't likely to work
         dir = os.path.normpath(
             os.path.join(os.path.dirname(__file__),
                          os.pardir, os.pardir, os.pardir, os.pardir))
@@ -92,7 +94,7 @@ def load_options(args=None):
     options.realize(args)
     options = options.configroot
 
-    if options.path:
+    if options and options.path:
         sys.path[:0] = [os.path.abspath(p) for p in options.path]
     return options
 
