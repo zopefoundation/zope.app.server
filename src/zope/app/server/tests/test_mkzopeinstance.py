@@ -69,15 +69,12 @@ class ArgumentParsingTestCase(unittest.TestCase):
         self.check_stdout_content(["-h"])
 
     def check_stdout_content(self, args):
-        try:
+        with self.assertRaises(SystemExit) as cm:
             with capture_output() as (stdout, stderr):
                 self.parse_args(args, stdout, stderr)
-        except SystemExit as e:
-            self.assertEqual(e.code, 0)
-            self.assert_(stdout.getvalue())
-            self.failIf(stderr.getvalue())
-        else:
-            self.fail("expected SystemExit")
+        self.assertEqual(cm.exception.code, 0)
+        self.assertNotEqual(stdout.getvalue(), "")
+        self.assertEqual(stderr.getvalue(), "")
 
     def test_without_destination(self):
         options = self.parse_args([])
@@ -145,12 +142,9 @@ class ArgumentParsingTestCase(unittest.TestCase):
         self.assertEqual(options.password_manager, "Manager")
 
     def test_junk_positional_arg(self):
-        try:
+        with self.assertRaises(SystemExit) as cm:
             self.parse_args(["junk"])
-        except SystemExit as e:
-            self.assert_(e.code)
-        else:
-            self.fail("expected SystemExit")
+        self.assertNotEqual(cm.exception.code, 0)
 
 
 class InputCollectionTestCase(unittest.TestCase):
@@ -286,13 +280,10 @@ class InputCollectionTestCase(unittest.TestCase):
         options = self.createOptions()
         options.password_manager = "Unknown"
         app = ControlledInputApplication(options, [])
-        try:
+        with self.assertRaises(SystemExit) as cm:
             with capture_output() as (stdout, stderr):
                 app.get_password_manager()
-        except SystemExit as e:
-            self.assertEqual(e.code, 1)
-        else:
-            self.fail("expected SystemExit")
+        self.assertEqual(cm.exception.code, 1)
         self.failUnless(stderr.getvalue())
         self.failIf(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
@@ -310,13 +301,10 @@ class InputCollectionTestCase(unittest.TestCase):
     def test_get_password_not_verified(self):
         options = self.createOptions()
         app = ControlledInputApplication(options, ["foo", "bar"])
-        try:
+        with self.assertRaises(SystemExit) as cm:
             with capture_output() as (stdout, stderr):
                 app.get_password()
-        except SystemExit as e:
-            self.assertEqual(e.code, 1)
-        else:
-            self.fail("expected SystemExit")
+        self.assertEqual(cm.exception.code, 1)
         self.failUnless(stderr.getvalue())
         self.failUnless(stdout.getvalue())
         self.failUnless(app.all_input_consumed())
@@ -404,7 +392,7 @@ class InputCollectionTestCase(unittest.TestCase):
         # cleanup the fake 'zope' module
         if old_path is None:
             del zope.__file__
-        else:
+        else:  # pragma: no cover
             zope.__file__ = old_path
 
 
