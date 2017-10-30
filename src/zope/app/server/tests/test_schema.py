@@ -25,15 +25,3 @@ class TestConfiguration(unittest.TestCase):
         dir = os.path.dirname(os.path.dirname(__file__))
         filename = os.path.join(dir, "schema.xml")
         ZConfig.loadSchema(filename)
-
-
-def test_suite():
-    return unittest.makeSuite(TestConfiguration)
-
-if __name__ == "__main__":
-    try:
-        __file__
-    except NameError:
-        import sys
-        __file__ = sys.argv[0]
-    unittest.main(defaultTest="test_suite")

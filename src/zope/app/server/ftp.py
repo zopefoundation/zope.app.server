@@ -21,25 +21,26 @@ from zope.server.ftp.publisher import PublisherFTPServer
 from zope.app.server.servertype import ServerType
 import zope.interface
 
+
+@zope.interface.implementer(IPublicationRequestFactory)
 class FTPRequestFactory(object):
     """FTP Request factory
 
     FTP request factories for a given database create FTP requests with
     publications on the given database:
 
-.. The test below has been disabled and moved to test_ftp.py (LP #257954)
+    .. The test below has been disabled and moved to test_ftp.py (LP #257954)
 
       >>> from ZODB.tests.util import DB
       >>> db = DB()
       >>> factory = FTPRequestFactory(db)
-      >>> from cStringIO import StringIO
-      >>> request = factory(StringIO(''), {'credentials': None, 'path': '/'})
+      >>> from io import BytesIO
+      >>> request = factory(BytesIO(b''), {'credentials': None, 'path': '/'})
       >>> request.publication.db is db
       True
       >>> db.close()
 
     """
-    zope.interface.implements(IPublicationRequestFactory)
 
     def __init__(self, db):
         self.publication = FTPPublication(db)
@@ -48,6 +49,7 @@ class FTPRequestFactory(object):
         request = FTPRequest(input_stream, env)
         request.setPublication(self.publication)
         return request
+
 
 server = ServerType(
     PublisherFTPServer,

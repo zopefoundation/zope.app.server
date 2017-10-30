@@ -22,11 +22,11 @@ from zope.server.http import wsgihttpserver
 from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
 from zope.app.wsgi import WSGIPublisherApplication
 
-import servertype
+from zope.app.server import servertype
 
+
+@zope.interface.implementer(servertype.IServerType)
 class ServerType(object):
-
-    zope.interface.implements(servertype.IServerType)
 
     def __init__(self, factory, applicationFactory, logFactory,
                  defaultPort, defaultVerbose, defaultIP='',

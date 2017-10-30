@@ -13,7 +13,7 @@
 ##############################################################################
 """Server Type
 """
-from zope.interface import Interface, implements
+from zope.interface import Interface, implementer
 
 
 class IServerType(Interface):
@@ -29,9 +29,9 @@ class IServerType(Interface):
         Returns the new server.
         """
 
-class ServerType(object):
 
-    implements(IServerType)
+@implementer(IServerType)
+class ServerType(object):
 
     def __init__(self, factory, requestFactory, logFactory,
                  defaultPort, defaultVerbose, defaultIP=''):

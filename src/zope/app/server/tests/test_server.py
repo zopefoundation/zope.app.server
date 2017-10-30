@@ -13,10 +13,8 @@
 ##############################################################################
 """Tests for zope.app.server.server
 """
-import unittest
 import doctest
 
-from zope.interface.verify import verifyObject
 from zope.component import provideUtility
 from zope.app.testing import setup
 
@@ -29,10 +27,10 @@ def doctest_ServerFactory():
 
         >>> setup.placelessSetUp()
 
-        >>> from zope.interface import implements
+        >>> from zope.interface import implementer
         >>> from zope.app.server.servertype import IServerType
-        >>> class MyServerType:
-        ...     implements(IServerType)
+        >>> @implementer(IServerType)
+        ... class MyServerType:
         ...     def create(self, name, task_dispatcher, db, port='unknown',
         ...                verbose='unspecified', ip=''):
         ...         if not ip:
@@ -62,7 +60,7 @@ def doctest_ServerFactory():
 
         >>> task_dispatcher = 'my task dispatcher'
         >>> db = 'my db'
-        >>> print sf.create(task_dispatcher, db)
+        >>> print(sf.create(task_dispatcher, db))
         HTTP server on *:8080, registered with my task dispatcher,
         serving from my db, verbosity False
 
@@ -72,7 +70,7 @@ def doctest_ServerFactory():
         >>> my_section.address = ('127.0.0.1', 8021)
         >>> my_section.verbose = True
         >>> sf = ServerFactory(my_section)
-        >>> print sf.create(task_dispatcher, db)
+        >>> print(sf.create(task_dispatcher, db))
         FTP server on 127.0.0.1:8021, registered with my task dispatcher,
         serving from my db, verbosity True
 
@@ -84,10 +82,4 @@ def doctest_ServerFactory():
 
 
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocTestSuite(),
-        ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocTestSuite()
