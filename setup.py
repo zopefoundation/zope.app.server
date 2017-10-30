@@ -29,14 +29,14 @@ def read(*rnames):
 
 setup(
     name='zope.app.server',
-    version='4.0.0dev',
+    version='4.0.0.dev0',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description='ZServer integration for Zope 3 Applications',
     long_description=(
-        read('README.txt')
+        read('README.rst')
         + '\n\n' +
-        read('CHANGES.txt')
+        read('CHANGES.rst')
     ),
     keywords="zope3 zserver server http ftp wsgi",
     classifiers=[
@@ -49,6 +49,8 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
@@ -63,6 +65,7 @@ setup(
         test=[
             'zope.testrunner',
             'zope.app.testing',
+            'ZODB',
         ],
     ),
     install_requires=[
@@ -81,7 +84,6 @@ setup(
         'zope.processlifetime',
         'zdaemon',
         'ZConfig',
-        'ZODB3',
     ],
     include_package_data=True,
     zip_safe=False,
