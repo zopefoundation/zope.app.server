@@ -13,7 +13,6 @@
 ##############################################################################
 """Tests for zope.app.server.servertype
 """
-import unittest
 import doctest
 
 from zope.interface.verify import verifyObject
@@ -120,7 +119,3 @@ def doctest_ServerType():
 
 def test_suite():
     return doctest.DocTestSuite()
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

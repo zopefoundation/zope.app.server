@@ -28,11 +28,3 @@ class Tests(unittest.TestCase):
         request = factory(BytesIO(b''), {'credentials': None, 'path': '/'})
         self.assertTrue(request.publication.db is db)
         db.close()
-
-
-def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Tests)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

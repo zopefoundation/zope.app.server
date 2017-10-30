@@ -433,13 +433,3 @@ class Options(object):
     program = "[test-program]"
     add_package_includes = False
     zserver = False
-
-
-def test_suite():
-    suite = unittest.makeSuite(ArgumentParsingTestCase)
-    suite.addTest(unittest.makeSuite(InputCollectionTestCase))
-    return suite
-
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

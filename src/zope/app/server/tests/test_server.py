@@ -13,10 +13,8 @@
 ##############################################################################
 """Tests for zope.app.server.server
 """
-import unittest
 import doctest
 
-from zope.interface.verify import verifyObject
 from zope.component import provideUtility
 from zope.app.testing import setup
 
@@ -84,10 +82,4 @@ def doctest_ServerFactory():
 
 
 def test_suite():
-    return unittest.TestSuite((
-        doctest.DocTestSuite(),
-        ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    return doctest.DocTestSuite()

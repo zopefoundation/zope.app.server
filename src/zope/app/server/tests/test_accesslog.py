@@ -71,7 +71,3 @@ class TestAccessLogging(LoggingTestBase):
         self.assertEquals(logger.name, "accesslog")
         self.assertEquals(logger.level, logging.INFO)
         return logger
-
-
-def test_suite():
-    return unittest.makeSuite(TestAccessLogging)
