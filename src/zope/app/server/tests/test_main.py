@@ -13,5 +13,8 @@ class TestMain(unittest.TestCase):
         self.assertEqual(cm.exception.code, 2)
         self.assertNotEqual(stderr.getvalue(), "")
 
-    def test_load_options(self):
+    def test_load_options_no_config_file_specified(self):
         options = load_options([])
+        self.assertIs(options, None)
+
+    # TODO: somebody finish this please
