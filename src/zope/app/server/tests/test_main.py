@@ -1,7 +1,7 @@
 import unittest
 
 from zope.app.server.main import main, load_options
-from zope.app.server._testing import capture_output
+from zope.app.server.tests import capture_output
 
 
 class TestMain(unittest.TestCase):

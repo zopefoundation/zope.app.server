@@ -20,7 +20,7 @@ import tempfile
 import unittest
 
 from zope.app.server import mkzopeinstance
-from zope.app.server._testing import capture_output
+from zope.app.server.tests import capture_output
 
 
 class ArgumentParsingTestCase(unittest.TestCase):
