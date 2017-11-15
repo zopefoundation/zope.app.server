@@ -13,7 +13,6 @@
 ##############################################################################
 """WSGI-compliant HTTP server setup.
 """
-__docformat__ = "reStructuredText"
 
 import zope.interface
 from zope.server.http.commonaccesslogger import CommonAccessLogger
