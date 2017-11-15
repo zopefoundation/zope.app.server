@@ -29,7 +29,7 @@ def read(*rnames):
 
 setup(
     name='zope.app.server',
-    version='4.0.0',
+    version='4.0.1.dev0',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description='ZServer integration for Zope 3 Applications',
