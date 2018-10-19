@@ -65,7 +65,7 @@ setup(
         test=[
             'zope.testrunner',
             'zope.app.testing',
-            'ZODB',
+            'ZODB[test]',
         ],
     ),
     install_requires=[
