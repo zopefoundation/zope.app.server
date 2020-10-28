@@ -6,8 +6,8 @@
         :target: https://pypi.org/project/zope.app.server/
         :alt: Supported Python versions
 
-.. image:: https://travis-ci.org/zopefoundation/zope.app.server.svg?branch=master
-        :target: https://travis-ci.org/zopefoundation/zope.app.server
+.. image:: https://travis-ci.com/zopefoundation/zope.app.server.svg?branch=master
+        :target: https://travis-ci.com/zopefoundation/zope.app.server
 
 .. image:: https://coveralls.io/repos/github/zopefoundation/zope.app.server/badge.svg?branch=master
         :target: https://coveralls.io/github/zopefoundation/zope.app.server?branch=master
