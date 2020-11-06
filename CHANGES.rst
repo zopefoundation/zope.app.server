@@ -5,7 +5,9 @@
 4.0.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Add support for Python 3.7.
+
+- Drop support for Python 3.4 and 3.5.
 
 
 4.0.0 (2017-11-15)
@@ -37,6 +39,7 @@
 - Moved a doctest into a unittest to fix failures in the KGS test suite
   (see LP #257954)
 
+
 3.4.1 (2008-02-25)
 ==================
 
@@ -44,6 +47,7 @@
   so it gets restarted by zdaemon, or an equivalent mechanism.
 
 - Removed the use of ``ThreadedAsync``.
+
 
 3.4.0 (2007-10-27)
 ==================

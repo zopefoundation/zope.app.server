@@ -1,12 +1,11 @@
 language: python
-sudo: false
+dist: focal
 cache: pip
 python:
     - 2.7
-    - 3.4
-    - 3.5
     - 3.6
-    - pypy
+    - 3.7
+    - pypy2
     - pypy3
 install:
     - pip install coveralls coverage
