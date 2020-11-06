@@ -15,5 +15,5 @@ class TestWSGIServerType(unittest.TestCase):
     def test_create(self):
         dispatcher = 'my task dispatcher'
         db = 'my database'
-        server = http.create("HTTP", dispatcher, db)
+        server = http.create("HTTP", dispatcher, db, port=0)
         self.assertIsInstance(server, WSGIHTTPServer)
