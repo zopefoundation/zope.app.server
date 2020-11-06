@@ -17,7 +17,12 @@ import asyncore
 import logging
 import os
 import sys
-import time
+
+from time import time as wall_clock_time
+try:
+    from time import process_time
+except ImportError:
+    from time import clock as process_time
 
 from zdaemon import zdoptions
 
@@ -28,6 +33,7 @@ from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
 CONFIG_FILENAME = "zope.conf"
+
 
 class ZopeOptions(zdoptions.ZDOptions):
 
@@ -46,17 +52,18 @@ class ZopeOptions(zdoptions.ZDOptions):
         return None
 
 
-
 exit_status = None
+
+
 def main(args=None):
     # Record start times (real time and CPU time)
-    t0 = time.time()
-    c0 = time.clock()
+    t0 = wall_clock_time()
+    c0 = process_time()
 
     setup(load_options(args))
 
-    t1 = time.time()
-    c1 = time.clock()
+    t1 = wall_clock_time()
+    c1 = process_time()
     logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
 
     run()
@@ -113,7 +120,8 @@ def setup(options):
     # Provide the devmode, if activated
     if options.devmode:
         features += ('devmode',)
-        logging.warning("Developer mode is enabled: this is a security risk "
+        logging.warning(
+            "Developer mode is enabled: this is a security risk "
             "and should NOT be enabled on production servers. Developer mode "
             "can be turned off in etc/zope.conf")
 
