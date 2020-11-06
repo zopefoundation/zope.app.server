@@ -62,7 +62,7 @@ class TestAccessLogging(LoggingTestBase):
                                           "  <syslog>\n"
                                           "    level error\n"
                                           "    facility local3\n"
-                                          "    format xyzzy\n"
+                                          "    format %(message)s\n"
                                           "  </syslog>\n"
                                           "</accesslog>")
         self.assertEqual(len(logger.handlers), 1)
