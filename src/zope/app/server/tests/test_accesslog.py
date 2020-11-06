@@ -19,11 +19,20 @@ import unittest
 from ZConfig.components.logger import loghandler
 
 try:
+    # ZConfig < 2.9.2
     from ZConfig.components.logger.tests.test_logger import LoggingTestBase
 except ImportError:
-    from ZConfig.components.logger.tests.test_logger import LoggingTestHelper
+    try:
+        # ZConfig >= 3.4.0
+        from ZConfig.components.logger.tests.support import LoggingTestHelper
+    except ImportError:
+        # ZConfig >= 2.9.2, < 3.4.0
+        from ZConfig.components.logger.tests.test_logger import \
+            LoggingTestHelper
+
     class LoggingTestBase(LoggingTestHelper, unittest.TestCase):
         pass
+
 
 class TestAccessLogging(LoggingTestBase):
 
