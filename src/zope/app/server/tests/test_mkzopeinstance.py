@@ -185,15 +185,15 @@ class InputCollectionTestCase(unittest.TestCase):
         app = ControlledInputApplication(options, [])
         with capture_output() as (stdout, stderr):
             self.assertEqual(app.process(), 0)
-        self.assert_(
-            'from zope.app.server.main import main' in
+        self.assertIn(
+            'from zope.app.server.main import main',
             open(os.path.join(self.instance, 'bin', 'runzope')).read()
             )
-        self.assert_(
-            'from zope.app.server.main import debug' in
+        self.assertIn(
+            'from zope.app.server.main import debug',
             open(os.path.join(self.instance, 'bin', 'debugzope')).read()
             )
-        self.assert_(os.path.exists(
+        self.assertTrue(os.path.exists(
             os.path.join(self.instance, 'etc', 'zope.conf')
             ))
 
