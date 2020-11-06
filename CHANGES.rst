@@ -5,7 +5,7 @@
 4.0.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Drop support for Python 3.4 and 3.5.
 
 
 4.0.0 (2017-11-15)
