@@ -69,6 +69,7 @@ class TestAccessLogging(LoggingTestBase):
         self.assertEqual(syslog.level, logging.ERROR)
         self.assertIsInstance(syslog, loghandler.SysLogHandler)
         self.assertEqual(syslog.formatter._fmt, "%(message)s")
+        syslog.close()  # avoid ResourceWarnings
 
     def check_simple_logger(self, text):
         conf = self.get_config(text)
