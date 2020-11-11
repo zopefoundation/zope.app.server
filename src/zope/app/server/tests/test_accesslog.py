@@ -47,36 +47,36 @@ class TestAccessLogging(LoggingTestBase):
 
     def test_config_without_logger(self):
         conf = self.get_config("")
-        self.assert_(conf.accesslog is None)
+        self.assertIsNone(conf.accesslog)
 
     def test_config_without_handlers(self):
         logger = self.check_simple_logger("<accesslog/>")
         # Make sure there's a NullHandler, since a warning gets
         # printed if there are no handlers:
         self.assertEqual(len(logger.handlers), 1)
-        self.assert_(isinstance(logger.handlers[0],
-                                loghandler.NullHandler))
+        self.assertIsInstance(logger.handlers[0], loghandler.NullHandler)
 
     def test_formatter(self):
         logger = self.check_simple_logger("<accesslog>\n"
                                           "  <syslog>\n"
                                           "    level error\n"
                                           "    facility local3\n"
-                                          "    format xyzzy\n"
+                                          "    format %(message)s\n"
                                           "  </syslog>\n"
                                           "</accesslog>")
         self.assertEqual(len(logger.handlers), 1)
         syslog = logger.handlers[0]
         self.assertEqual(syslog.level, logging.ERROR)
-        self.assert_(isinstance(syslog, loghandler.SysLogHandler))
+        self.assertIsInstance(syslog, loghandler.SysLogHandler)
         self.assertEqual(syslog.formatter._fmt, "%(message)s")
+        syslog.close()  # avoid ResourceWarnings
 
     def check_simple_logger(self, text):
         conf = self.get_config(text)
-        self.assert_(conf.accesslog is not None)
+        self.assertIsNotNone(conf.accesslog)
         logger = conf.accesslog()
-        self.assert_(isinstance(logger, logging.Logger))
-        self.assert_(not logger.propagate)
-        self.assertEquals(logger.name, "accesslog")
-        self.assertEquals(logger.level, logging.INFO)
+        self.assertIsInstance(logger, logging.Logger)
+        self.assertFalse(logger.propagate)
+        self.assertEqual(logger.name, "accesslog")
+        self.assertEqual(logger.level, logging.INFO)
         return logger
