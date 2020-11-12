@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 class TestZpasswdDeprecation(unittest.TestCase):
 
-    if not hasattr(unittest.TestCase, 'asserWarns'):
+    if not hasattr(unittest.TestCase, 'assertWarns'):
         # Python 2.7 compat, *sigh*
         @contextmanager
         def assertWarns(self, what):
