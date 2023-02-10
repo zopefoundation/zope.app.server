@@ -32,7 +32,7 @@ class IServerType(Interface):
 
 
 @implementer(IServerType)
-class ServerType(object):
+class ServerType:
 
     def __init__(self, factory, requestFactory, logFactory,
                  defaultPort, defaultVerbose, defaultIP=''):

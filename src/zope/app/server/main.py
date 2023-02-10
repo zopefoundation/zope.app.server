@@ -17,19 +17,13 @@ import asyncore
 import logging
 import os
 import sys
+from time import process_time
 from time import time as wall_clock_time
-
-
-try:
-    from time import process_time
-except ImportError:
-    from time import clock as process_time
-
-from zdaemon import zdoptions
 
 import zope.app.appsetup.appsetup
 import zope.app.appsetup.product
 import zope.processlifetime
+from zdaemon import zdoptions
 from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
 

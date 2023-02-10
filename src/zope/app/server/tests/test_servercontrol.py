@@ -1,9 +1,10 @@
 import unittest
 
-import zope.app.server.main
-from zope.app.server.servercontrol import serverControl
 from zope.applicationcontrol.interfaces import IServerControl
 from zope.interface.verify import verifyObject
+
+import zope.app.server.main
+from zope.app.server.servercontrol import serverControl
 
 
 class TestServerControl(unittest.TestCase):

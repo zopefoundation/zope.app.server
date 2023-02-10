@@ -14,13 +14,14 @@
 """Server Control Implementation
 """
 
-import zope.app.server.main
 from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.interface import implementer
 
+import zope.app.server.main
+
 
 @implementer(IServerControl)
-class ServerControl(object):
+class ServerControl:
 
     def shutdown(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""

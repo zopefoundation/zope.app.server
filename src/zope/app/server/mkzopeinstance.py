@@ -21,7 +21,6 @@ This creates a new instances of the Zope server instance home.  An
 - server process control scripts and data
 """
 
-from __future__ import print_function
 
 import optparse
 import os
@@ -29,9 +28,10 @@ import shutil
 import sys
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
-import zope.app.server
 from zope.app.applicationcontrol import zopeversion
 from zope.password import password
+
+import zope.app.server
 
 
 def main(argv=None, from_checkout=False):
@@ -54,7 +54,7 @@ def main(argv=None, from_checkout=False):
         return e.code
 
 
-class Application(object):
+class Application:
 
     def __init__(self, options):
         self.options = options
@@ -257,7 +257,7 @@ class Application(object):
     def copyfile(self, src, dst):
         if dst.endswith(".in"):
             dst = dst[:-3]
-            text = open(src, "r").read()
+            text = open(src).read()
             # perform replacements
             for var, string in self.replacements:
                 text = text.replace(var, string)

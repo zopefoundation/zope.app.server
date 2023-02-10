@@ -16,14 +16,15 @@
 
 import zope.interface
 from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
-from zope.app.server import servertype
 from zope.app.wsgi import WSGIPublisherApplication
 from zope.server.http import wsgihttpserver
 from zope.server.http.commonaccesslogger import CommonAccessLogger
 
+from zope.app.server import servertype
+
 
 @zope.interface.implementer(servertype.IServerType)
-class ServerType(object):
+class ServerType:
 
     def __init__(self, factory, applicationFactory, logFactory,
                  defaultPort, defaultVerbose, defaultIP='',

@@ -16,14 +16,15 @@
 import zope.interface
 from zope.app.publication.ftp import FTPPublication
 from zope.app.publication.interfaces import IPublicationRequestFactory
-from zope.app.server.servertype import ServerType
 from zope.publisher.ftp import FTPRequest
 from zope.server.ftp.logger import CommonFTPActivityLogger
 from zope.server.ftp.publisher import PublisherFTPServer
 
+from zope.app.server.servertype import ServerType
+
 
 @zope.interface.implementer(IPublicationRequestFactory)
-class FTPRequestFactory(object):
+class FTPRequestFactory:
     """FTP Request factory
 
     FTP request factories for a given database create FTP requests with
