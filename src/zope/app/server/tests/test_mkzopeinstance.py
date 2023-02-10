@@ -193,7 +193,7 @@ class InputCollectionTestCase(unittest.TestCase):
                 'from zope.app.server.main import debug', f.read())
         self.assertTrue(os.path.exists(
             os.path.join(self.instance, 'etc', 'zope.conf')
-            ))
+        ))
 
     def test_process_aborts_on_file_destination(self):
         options = self.createOptions()

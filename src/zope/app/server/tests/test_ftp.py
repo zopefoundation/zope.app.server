@@ -22,6 +22,7 @@ class Tests(unittest.TestCase):
 
     def test_ftp(self):
         from ZODB.tests.util import DB
+
         from zope.app.server.ftp import FTPRequestFactory
         db = DB()
         factory = FTPRequestFactory(db)

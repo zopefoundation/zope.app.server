@@ -18,6 +18,7 @@ import unittest
 
 from ZConfig.components.logger import loghandler
 
+
 try:
     # ZConfig < 2.9.2
     from ZConfig.components.logger.tests.test_logger import LoggingTestBase

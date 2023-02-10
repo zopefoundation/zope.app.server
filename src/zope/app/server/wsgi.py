@@ -15,13 +15,11 @@
 """
 
 import zope.interface
-from zope.server.http.commonaccesslogger import CommonAccessLogger
-from zope.server.http import wsgihttpserver
-
 from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
-from zope.app.wsgi import WSGIPublisherApplication
-
 from zope.app.server import servertype
+from zope.app.wsgi import WSGIPublisherApplication
+from zope.server.http import wsgihttpserver
+from zope.server.http.commonaccesslogger import CommonAccessLogger
 
 
 @zope.interface.implementer(servertype.IServerType)
@@ -37,7 +35,6 @@ class ServerType(object):
         self._defaultPort = defaultPort
         self._defaultVerbose = defaultVerbose
         self._defaultIP = defaultIP
-
 
     def create(self, name, task_dispatcher, db, port=None,
                verbose=None, ip=None):
@@ -56,10 +53,10 @@ class ServerType(object):
             verbose = self._defaultVerbose
 
         return self._factory(application, name, ip, port,
-                      task_dispatcher=task_dispatcher,
-                      verbose=verbose,
-                      hit_log=self._logFactory(),
-                      )
+                             task_dispatcher=task_dispatcher,
+                             verbose=verbose,
+                             hit_log=self._logFactory(),
+                             )
 
 
 http = ServerType(wsgihttpserver.WSGIHTTPServer,

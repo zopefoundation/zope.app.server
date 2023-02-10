@@ -1,6 +1,7 @@
 import sys
 from contextlib import contextmanager
-from io import StringIO, BytesIO
+from io import BytesIO
+from io import StringIO
 
 
 # By using io.BytesIO() instead of cStringIO.StringIO() on Python 2 we make
