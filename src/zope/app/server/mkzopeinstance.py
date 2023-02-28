@@ -21,7 +21,6 @@ This creates a new instances of the Zope server instance home.  An
 - server process control scripts and data
 """
 
-from __future__ import print_function
 
 import optparse
 import os
@@ -29,9 +28,10 @@ import shutil
 import sys
 from xml.sax.saxutils import quoteattr as xml_quoteattr
 
-import zope.app.server
-from zope.password import password
 from zope.app.applicationcontrol import zopeversion
+from zope.password import password
+
+import zope.app.server
 
 
 def main(argv=None, from_checkout=False):
@@ -54,7 +54,7 @@ def main(argv=None, from_checkout=False):
         return e.code
 
 
-class Application(object):
+class Application:
 
     def __init__(self, options):
         self.options = options
@@ -66,7 +66,7 @@ class Application(object):
             print('Error: Tried to ask for user input in'
                   ' non-interactive mode.', file=sys.stderr)
             sys.exit(1)
-        return raw_input(prompt)
+        return input(prompt)
 
     def read_password(self, prompt):
         # The tests replace this to make sure the right things happen.
@@ -135,7 +135,7 @@ class Application(object):
     def get_skeltarget(self):
         self.print_message(SKELTARGET_MESSAGE)
         self.need_blank_line = True
-        while 1:
+        while True:
             skeltarget = self.read_input_line("Directory: ").strip()
             if skeltarget == '':
                 print('You must specify a directory', file=sys.stderr)
@@ -145,16 +145,18 @@ class Application(object):
     def get_username(self):
         self.print_message(USERNAME_MESSAGE)
         self.need_blank_line = True
-        while 1:
+        while True:
             username = self.read_input_line("Username: ").strip()
             if not username:
-                print("You must specify an administrative user", file=sys.stderr)
+                print(
+                    "You must specify an administrative user",
+                    file=sys.stderr)
                 continue
             return username
 
     def get_password(self):
         self.print_message(PASSWORD_MESSAGE)
-        while 1:
+        while True:
             password = self.read_password("Password: ")
             if not password:
                 print("Password may not be empty", file=sys.stderr)
@@ -185,7 +187,7 @@ class Application(object):
             print("% i. %s" % (i + 1, name))
         print()
         self.need_blank_line = True
-        while 1:
+        while True:
             password_manager = self.read_input_line(
                 "Password Manager Number [1]: ")
             if not password_manager:
@@ -224,15 +226,14 @@ class Application(object):
             ("<<INSTANCE_HOME>>", options.destination),
             ("<<ZOPE_HOME>>", zope_home),
             ("<<SOFTWARE_HOME>>", software_home),
-            ]
+        ]
         self.copytree(self.options.skeleton, self.options.destination)
         if options.zserver:
             self.copytree(
                 os.path.join(os.path.dirname(zope.app.server.__file__),
                              'zopeskel'),
                 self.options.destination,
-                )
-
+            )
 
     def copytree(self, src, dst):
         # Similar to shutil.copytree(), but doesn't care about
@@ -256,7 +257,7 @@ class Application(object):
     def copyfile(self, src, dst):
         if dst.endswith(".in"):
             dst = dst[:-3]
-            text = open(src, "rU").read()
+            text = open(src).read()
             # perform replacements
             for var, string in self.replacements:
                 text = text.replace(var, string)
@@ -281,6 +282,7 @@ class Application(object):
                 shutil.copystat(src, dst)
         else:
             shutil.copy2(src, dst)
+
 
 SKELTARGET_MESSAGE = """\
 Please choose a directory in which you'd like to install Zope
@@ -331,7 +333,6 @@ use in development or in sites that can stand a little uncertianty, so
 that we can gain more experience with it.
 """,
                  )
-
 
     options, args = p.parse_args(argv[1:])
     if options.skeleton is None:

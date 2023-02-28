@@ -13,7 +13,8 @@
 ##############################################################################
 """Server Type
 """
-from zope.interface import Interface, implementer
+from zope.interface import Interface
+from zope.interface import implementer
 
 
 class IServerType(Interface):
@@ -31,7 +32,7 @@ class IServerType(Interface):
 
 
 @implementer(IServerType)
-class ServerType(object):
+class ServerType:
 
     def __init__(self, factory, requestFactory, logFactory,
                  defaultPort, defaultVerbose, defaultIP=''):
@@ -41,7 +42,6 @@ class ServerType(object):
         self._defaultPort = defaultPort
         self._defaultVerbose = defaultVerbose
         self._defaultIP = defaultIP
-
 
     def create(self, name, task_dispatcher, db, port=None,
                verbose=None, ip=None):
@@ -59,7 +59,7 @@ class ServerType(object):
             verbose = self._defaultVerbose
 
         return self._factory(request_factory, name, ip, port,
-                      task_dispatcher=task_dispatcher,
-                      verbose=verbose,
-                      hit_log=self._logFactory(),
-                      )
+                             task_dispatcher=task_dispatcher,
+                             verbose=verbose,
+                             hit_log=self._logFactory(),
+                             )

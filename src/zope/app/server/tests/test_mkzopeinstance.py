@@ -130,7 +130,7 @@ class ArgumentParsingTestCase(unittest.TestCase):
 class InputCollectionTestCase(unittest.TestCase):
 
     def setUp(self):
-        super(InputCollectionTestCase, self).setUp()
+        super().setUp()
         self.tmpdir = tempfile.mkdtemp(prefix="test-mkzopeinstance-")
         self.skeleton = os.path.join(self.tmpdir, "skel")
         self.instance = os.path.join(self.tmpdir, "inst")
@@ -138,7 +138,7 @@ class InputCollectionTestCase(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
-        super(InputCollectionTestCase, self).tearDown()
+        super().tearDown()
 
     def createOptions(self):
         options = Options()
@@ -193,7 +193,7 @@ class InputCollectionTestCase(unittest.TestCase):
                 'from zope.app.server.main import debug', f.read())
         self.assertTrue(os.path.exists(
             os.path.join(self.instance, 'etc', 'zope.conf')
-            ))
+        ))
 
     def test_process_aborts_on_file_destination(self):
         options = self.createOptions()
@@ -389,7 +389,7 @@ class ControlledInputApplication(mkzopeinstance.Application):
         return not self.__input
 
 
-class Options(object):
+class Options:
 
     username = "[test-username]"
     password_manager = "Plain Text"

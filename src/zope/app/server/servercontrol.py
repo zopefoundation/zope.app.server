@@ -21,7 +21,7 @@ import zope.app.server.main
 
 
 @implementer(IServerControl)
-class ServerControl(object):
+class ServerControl:
 
     def shutdown(self, time=0):
         """See zope.app.applicationcontrol.interfaces.IServerControl"""

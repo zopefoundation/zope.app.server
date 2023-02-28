@@ -24,12 +24,6 @@ CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
 
 
 def run():
-    if sys.version_info < ( 2,3,5 ):
-        print """\
-        ERROR: Your python version is not supported by Zope3.
-        Zope3 needs Python 2.3.5 or greater. You are running:""" + sys.version
-        sys.exit(1)
-
     # This removes the script directory from sys.path, which we do
     # since there are no modules here.
     #

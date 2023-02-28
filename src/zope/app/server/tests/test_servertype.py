@@ -114,7 +114,7 @@ def doctest_ServerType():
         This server will not be verbose
         This server will be managed by my task dispatcher
 
-    """
+    """  # noqa: E501 line too long
 
 
 def test_suite():

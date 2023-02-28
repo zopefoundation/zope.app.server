@@ -16,9 +16,11 @@
 This is called by the ZConfig machinery while processing a configuration.
 """
 import zope.component
+
 from zope.app.server.servertype import IServerType
 
-class ServerFactory(object):
+
+class ServerFactory:
     """Factory for server objects.
 
     The factories are part of the configuration data returned by

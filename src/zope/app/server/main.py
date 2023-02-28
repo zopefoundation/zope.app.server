@@ -17,20 +17,16 @@ import asyncore
 import logging
 import os
 import sys
-
+from time import process_time
 from time import time as wall_clock_time
-try:
-    from time import process_time
-except ImportError:
-    from time import clock as process_time
-
-from zdaemon import zdoptions
 
 import zope.app.appsetup.appsetup
-import zope.processlifetime
 import zope.app.appsetup.product
+import zope.processlifetime
+from zdaemon import zdoptions
 from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
+
 
 CONFIG_FILENAME = "zope.conf"
 
@@ -64,7 +60,7 @@ def main(args=None):
 
     t1 = wall_clock_time()
     c1 = process_time()
-    logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
+    logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1 - t0, c1 - c0)
 
     run()
     sys.exit(exit_status or 0)

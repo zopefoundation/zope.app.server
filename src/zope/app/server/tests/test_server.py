@@ -15,8 +15,8 @@
 """
 import doctest
 
-from zope.component import provideUtility
 from zope.app.testing import setup
+from zope.component import provideUtility
 
 
 def doctest_ServerFactory():
